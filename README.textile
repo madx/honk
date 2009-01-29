@@ -87,4 +87,7 @@ file!
 
 h3. Comments
 
+Comments are stored in one file per post, so if you have a post stored in 
+@my_post.yml@, the comment file would be @my_post.comments.yml@.
+
 h2. Configuring and tweaking
