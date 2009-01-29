@@ -2,17 +2,14 @@ h1. Honk
 
 A minimalistic, text-based blogging engine.
 
-"Features":#honk-features | "Install":#honk-install | "Usage":#honk-usage |
-"Tweaking":#honk-tweaking
-
-h2(#honk-features). Features
+h2. Features
 
 * Posts,
 * Comments,
 * Tags,
 * That'it.
 
-h2(#honk-install). Requirements, install & setup
+h2. Requirements, install & setup
 
 You'll need "Sinatra":http://github.com/sinatra/sinatra and, optionnaly,
 "Thor":http://github.com/wycats/thor and a formatter such as RedCloth, 
@@ -27,7 +24,7 @@ Once you've got this, clone this repository or grab a tarball and extract it
 where you want to install your blog. Run @ruby honk.rb@ or @thor honk:start@ to
 start your blog.
 
-h2(#honk-usage). Usage 
+h2. Usage 
 
 Honk relies on two main files, plus your posts and the comments for your posts,
 which will be automatically generated.
@@ -38,17 +35,16 @@ The @index.yml@ files contains a sequence of mappings in which each key is a
 short name for your post, and the value is the path for your post (relative to
 Honk's root) or @nil@ to automatically build the path.
 
-<pre><code>
-  --- !honk.yapok.org,2009/Index
-  - my_first_post: my_first_post.yml
-  - another_one: another_one.yml
-  - alias: this_post_is_aliased.yml
-  - magic: ~ # will map to magic.yml
+<pre><code>--- !honk.yapok.org,2009/Index
+- my_first_post: my_first_post.yml
+- another_one: another_one.yml
+- alias: this_post_is_aliased.yml
+- magic: ~ # will map to magic.yml
 </code></pre>
 
 The way Honk works allows you to write posts without publishing them. They will
 be available only when you add them to the index. Be careful that it is a
-sequence, which mean it's ordered: the most recent posts go at the bottom of
+sequence, which mean it's ordered: the most recent post goes at the bottom of
 this file.
 
 h3. Tags
@@ -60,18 +56,35 @@ strongly advise you to use the Thor commands to manage your tags.
 
 Here's an example @tags.yml@
 
-<pre><code>
-  --- !honk.yapok.org,2009/TagsPerPost
-  a_post:
-    - a_tag
-    - another_one
-  --- !honk.yapok.org,2009/PostsPerTag
-  a_tag:
-    - a_post
-  another_one:
-    - a_post
+<pre><code>--- !honk.yapok.org,2009/TagsPerPost
+a_post:
+  - a_tag
+  - another_one
+--- !honk.yapok.org,2009/PostsPerTag
+a_tag:
+  - a_post
+another_one:
+  - a_post
 </code></pre>
 
-h3.
+h3. Posts
 
-h2(#honk-tweaking). Configuring and tweaking
+Posts are stored in YAML files as well, the format is self-explanatory enough:
+
+<pre><code>--- !honk.yapok.org,2009/Post
+title: A post about something
+tags:
+  - miscellaneous
+  - another tag
+timestamp: 2009-01-27T21:42:21+01:00
+contents: |-
+  <p>This is my <strong>first post</strong></p>
+  <p>As you can see I write raw HTML</p>
+</code></pre>
+
+Remember that in order to publish a post, you have to add it to the @index.yml@
+file!
+
+h3. Comments
+
+h2. Configuring and tweaking
