@@ -72,12 +72,13 @@ h3. Posts
 Posts are stored in YAML files as well, the format is self-explanatory enough:
 
 <pre><code>--- !honk.yapok.org,2009/Post
-title: A post about something
-tags:
+:title: A post about something
+:tags:
   - miscellaneous
   - another tag
-timestamp: 2009-01-27T21:42:21+01:00
-contents: |-
+:timestamp: 2009-01-27T21:42:21+01:00
+:comments?: yes
+:contents: |-
   <p>This is my <strong>first post</strong></p>
   <p>As you can see I write raw HTML</p>
 </code></pre>
@@ -88,6 +89,32 @@ file!
 h3. Comments
 
 Comments are stored in one file per post, so if you have a post stored in 
-@my_post.yml@, the comment file would be @my_post.comments.yml@.
+@my_post.yml@, the comments file would be @my_post.comments.yml@. The format is
+rather simple too:
+
+<pre><code>--- !honk.yapok.org,2009/Comment
+:author: Jonh Doe
+:email: john@doe.com
+:website: http://johndoe.com/
+:timestamp: 2009-01-27T21:42:21+01:00
+:contents: |-
+  Wow dude, that post is awesome!
+</code></pre>
+
+The comments file is a stream of comments, from the oldest to the latest.
 
 h2. Configuring and tweaking
+
+The basic configuration is done through the Honk.setup block it lets you define
+some basic parameters for your blog such as pagination. Just open the @honk.rb@
+file and go to the configuration block (search for @#~config@), you'll see
+something like:
+
+<pre><code>Honk.setup do
+  paginate 10
+  root '.'
+  # Uncomment the following lines to activate Textile formatting.
+  # formatter :redcloth
+  # format_proc lambda {|s| RedCloth.new(s).to_html }
+end
+</code></pre>
