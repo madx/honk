@@ -115,6 +115,29 @@ something like:
   root '.'
   # Uncomment the following lines to activate Textile formatting.
   # formatter :redcloth
-  # format_proc lambda {|s| RedCloth.new(s).to_html }
+  # format_proc lambda {|s| 
+  #   rc = RedCloth.new(s)
+  #   rc.hard_breaks = false; 
+  #   rc.to_html 
+  # }
 end
 </code></pre>
+
+h3. Configuration options
+
+* @paginate@: defines how many posts are showed per page.
+* @root@: tells honk where to find the posts, index and tags files, default is
+  the same dir as you blog, but you can change this to put your content
+  elsewhere.
+* @formatter@: the name of the gem to require to enable formatting, pass nil
+  to disable it. Using a formatter automatically sets a default @format_proc@
+  but you can still change that later.
+* @format_proc@: a proc that returns your formatted post. The argument is 
+  the contents of the post being formatted.
+
+If you want more tweaking, you can still hack the source, it's open.
+
+h3. Theme & layout
+
+Of course, Honk's layout can be overriden. Just take a look at
+@public/master.css@ and @views/@.
