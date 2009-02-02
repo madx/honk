@@ -77,7 +77,7 @@ Posts are stored in YAML files as well, the format is self-explanatory enough:
   - miscellaneous
   - another tag
 :timestamp: 2009-01-27T21:42:21+01:00
-:comments?: yes
+:commentable: yes
 :contents: |-
   <p>This is my <strong>first post</strong></p>
   <p>As you can see I write raw HTML</p>
