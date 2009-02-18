@@ -107,7 +107,7 @@ h2. Configuring and tweaking
 
 The basic configuration is done through the Honk.setup block it lets you define
 some basic parameters for your blog such as pagination. Just open the @honk.rb@
-file and go to the configuration block (search for @#~config@), you'll see
+file and go to the configuration block (search for @# configuration@), you'll see
 something like:
 
 <pre><code>Honk.setup do
