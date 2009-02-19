@@ -33,9 +33,8 @@ describe Index do
       Index.fetch(0..1)[0].should be_a(Honk::Post)
     end
 
-    it "should raise an error if the indexes are out of range" do
+    it "should raise an error if the first index is out of range" do
       lambda { Index.fetch(10..11) }.should raise_error(Honk::OutOfRangeError)
-      lambda { Index.fetch(0..100) }.should raise_error(Honk::OutOfRangeError)
     end
   end
 end

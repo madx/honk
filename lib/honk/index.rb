@@ -20,16 +20,19 @@ module Honk
       end
 
       def fetch(range)
-        if range.first >= @@list.length || range.to_a.last >= @@list.length
-          raise OutOfRangeError
-        end
-        @@list[range].collect do |name|
-          Post.open resolve(name)
+        raise OutOfRangeError if range.first >= @@list.length 
+        @@list[range].collect do |slug|
+          Post.open slug, resolve(slug)
         end
       end
 
-      def resolve(name)
-        @@mapping[name]
+      def page(num)
+        start = num * Honk.paginate
+        fetch start...(start + Honk.paginate)
+      end
+
+      def resolve(slug)
+        @@mapping[slug]
       end
     end
 
