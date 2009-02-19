@@ -14,7 +14,13 @@ module Honk
     :paginate    => 10,
     :root        => Pathname.new('.').expand_path,
     :formatter   => nil,
-    :format_proc => lambda {|s| s }
+    :format_proc => lambda {|s| s },
+    :meta        => {
+      :author => "Honk default author",
+      :title  => "Honk",
+      :domain => "honk.github.com",
+      :email  => "honk@nowhere.com"
+    }
   }
 
   FORMAT_PROCS = {
@@ -42,6 +48,10 @@ module Honk
 
     def root(path=nil)
       path ? @@config[:root] = Pathname.new(path).expand_path : @@config[:root]
+    end
+
+    def meta(hash=nil)
+      hash ? @@config[:meta] = hash : @@config[:meta]
     end
 
     def format_proc(&blk)

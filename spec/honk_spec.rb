@@ -37,9 +37,9 @@ describe Honk do
       Honk.formatter.should eql(:redcloth)
     end
 
-    it "should change de default format_proc with one argument" do
+    it "should change the default format_proc with one argument" do
       Honk.formatter :redcloth
-      Honk.format_proc.should eql Honk::FORMAT_PROCS[:redcloth]
+      Honk.format_proc.should eql(Honk::FORMAT_PROCS[:redcloth])
     end
 
     it "should reset the default format_proc when the formatter is unknown" do
@@ -49,7 +49,7 @@ describe Honk do
         $stderr = STDERR
       rescue SystemExit
       end
-      Honk.format_proc.should eql Honk::DEFAULTS[:format_proc]
+      Honk.format_proc.should eql(Honk::DEFAULTS[:format_proc])
     end
 
     it "should require the formatter with one argument" do
@@ -70,6 +70,24 @@ describe Honk do
 
     it "should raise an error if the proc arity is wrong" do
       lambda { Honk.format_proc {|a,b| a + b} }.should raise_error(ArgumentError)
+    end
+  end
+
+  describe '.meta' do
+    it "should return the meta hash without arguments" do
+      Honk.meta.should be_a(Hash)
+    end
+    
+    it "should have default values" do
+      Honk.meta[:author].should eql("Honk default author")
+      Honk.meta[:title].should eql("Honk")
+      Honk.meta[:domain].should eql("honk.github.com")
+      Honk.meta[:email].should eql("honk@nowhere.com")
+    end
+
+    it "should change the meta hash with one argument" do
+      Honk.meta({ :author => 'bar' })
+      Honk.meta[:author].should eql('bar')
     end
   end
 
