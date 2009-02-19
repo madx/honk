@@ -1,9 +1,10 @@
 !!! Strict
 %html{html_attrs}
   %head 
-    %title Honk
+    %title= Honk.meta[:title]
+    %meta{"http-equiv" => "ContentType", :content => "text/html; charset=utf8"}
   %body
-    %h1 Honk
+    %h1= Honk.meta[:title]
     #contents
       = yield
     %p#footer
