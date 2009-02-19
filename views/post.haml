@@ -4,7 +4,7 @@
 - else
   %h2= @post.title
 .post-contents
-  = @post.contents
+  = Honk.format_proc.call @post.contents
 .post-details
   %span.post-tags
     Tags:
