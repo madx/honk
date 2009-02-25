@@ -11,7 +11,7 @@
     - if @post.tags.empty?
       none
     - else
-      = @post.tags.collect {|t| tag_link t }.join(', ')
+      = @post.tags.collect {|t| tag_link(t).rstrip }.join(', ')
     |
     %span.post-timestamp== Posted on #{@post.timestamp}
     - if @short
