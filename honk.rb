@@ -22,6 +22,14 @@ helpers do
   def tag_link(t)
     partial "%a{:href => '/tag/#{t}', :title => 'View posts tagged #{t}'} #{t}"
   end
+
+  def comments_link(post)
+    comment_string = "#{post.comments.length} comment"
+    comment_string << 's' if post.comments.length != 1
+    partial %Q{
+      %%a{:href => '/post/%s', :title => 'View comments for this post'} %s
+    }.gsub("\n", '').strip % [post.slug, comment_string]
+  end
 end
 
 get '/' do

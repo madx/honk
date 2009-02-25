@@ -4,7 +4,8 @@
     %title= Honk.meta[:title]
     %meta{"http-equiv" => "ContentType", :content => "text/html; charset=utf8"}
   %body
-    %h1= Honk.meta[:title]
+    %h1
+      %a{:href => '/', :title => 'Back to the index'}= Honk.meta[:title]
     #contents
       = yield
     %p#footer

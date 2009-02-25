@@ -14,14 +14,28 @@
       = @post.tags.collect {|t| tag_link t }.join(', ')
     |
     %span.post-timestamp== Posted on #{@post.timestamp}
-    |
-    - if @post.commentable
-      == #{@post.comments.length} comments
-    - else
-      %span.post-comment-info Comments closed.
+    - if @short
+      |
+      - if @post.commentable
+        = comments_link @post
+      - else
+        %span.post-comment-info Comments closed.
 
 - unless @short
-  .post-comments
-    - @post.comments.each do |comment|
-      .comment
-        = comment.inspect.gsub('<', '&lt;')
+  - if @post.commentable
+    %h3 Comments
+    .post-comments
+      - @post.comments.each_with_index do |c, n|
+        %div.comment{:id => "comment-%s" % n}
+          .comment-info
+            %span.author
+              - if c.website
+                %a{:href => c.website, :title => "View website"}= c.author
+              - else
+                = c.author
+            %span.timestamp
+              = c.timestamp
+          .comment-contents
+            = c.contents
+  - else
+    %h3 Comments are disabled for this post.
