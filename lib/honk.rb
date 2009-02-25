@@ -53,7 +53,7 @@ module Honk
     end
 
     def meta(hash=nil)
-      hash ? @@config[:meta] = hash : @@config[:meta]
+      hash ? @@config[:meta].update(hash) : @@config[:meta]
     end
 
     def format_proc(&blk)
