@@ -12,10 +12,11 @@ module Honk
   class FileFormatError < StandardError; end
 
   DEFAULTS = {
-    :paginate    => 10,
-    :root        => Pathname.new('.').expand_path,
-    :formatter   => nil,
-    :format_proc => lambda {|s| s },
+    :paginate       => 10,
+    :root           => Pathname.new('.').expand_path,
+    :formatter      => nil,
+    :format_proc    => lambda {|s| s },
+    :comment_filter => lambda {|s| s },
     :meta        => {
       :author => "Honk default author",
       :title  => "Honk",
@@ -61,6 +62,15 @@ module Honk
         @@config[:format_proc] = blk 
       else 
         @@config[:format_proc] 
+      end
+    end
+
+    def comment_filter(&blk)
+      if block_given? 
+        raise ArgumentError if blk.arity != 1
+        @@config[:comment_filter] = blk 
+      else 
+        @@config[:comment_filter] 
       end
     end
 

@@ -5,7 +5,7 @@ describe Index do
     YAML.load_file(Honk.root / 'index.yml')
   end
 
-  describe ".yaml_initialize" do
+  describe "#yaml_initialize" do
     it "should expand the nil values" do
       Index.resolve("a_post").should eql("a_post.yml")
     end
@@ -13,7 +13,7 @@ describe Index do
     it "should raise an error if the content of the yaml file is not a hash" do
       lambda {
         YAML.load("--- !honk.yapok.org,2009/Index\n- foo")
-      }.should raise_error(Honk::IndexError)
+      }.should raise_error(FileFormatError)
     end
   end
 
@@ -22,7 +22,7 @@ describe Index do
       Index.has?("a_post").should be_true
     end
 
-    it "should return false else" do
+    it "should return false otherwise" do
       Index.has?("a_boring_post").should be_false
     end
   end

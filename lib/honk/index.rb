@@ -3,7 +3,7 @@ module Honk
     yaml_as "tag:honk.yapok.org,2009:Index"
 
     def yaml_initialize(tag, array)
-      raise IndexError unless array.is_a?(Array) && array[0].is_a?(Hash)
+      raise FileFormatError unless array.is_a?(Array) && array[0].is_a?(Hash)
       @@list = []
       @@mapping = {}
       for entry in array

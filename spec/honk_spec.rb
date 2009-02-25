@@ -73,6 +73,21 @@ describe Honk do
     end
   end
 
+  describe '.comment_filter' do
+    it "should return the proc without arguments" do
+      Honk.comment_filter.call("foo").should eql("foo")
+    end
+
+    it "should change the proc with one argument" do
+      Honk.comment_filter { |s| s.gsub('a', 'e') }
+      Honk.comment_filter.call("mah").should eql("meh")
+    end
+
+    it "should raise an error if the proc arity is wrong" do
+      lambda { Honk.comment_filter {|a,b| a + b} }.should raise_error(ArgumentError)
+    end
+  end
+
   describe '.meta' do
     it "should return the meta hash without arguments" do
       Honk.meta.should be_a(Hash)
