@@ -16,13 +16,12 @@
     %span.post-timestamp== Posted on #{@post.timestamp}
     |
     - if @post.commentable
-      %span.post-comment-info Comments allowed.
+      == #{@post.comments.length} comments
     - else
       %span.post-comment-info Comments closed.
 
 - unless @short
   .post-comments
-    - if @post.commentable
-      %p Comments are open for this post.
-    - else
-      %p Comments are closed for this post.
+    - @post.comments.each do |comment|
+      .comment
+        = comment.inspect.gsub('<', '&lt;')

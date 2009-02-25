@@ -9,6 +9,7 @@ module Honk
   class NoPostError     < StandardError; end
   class IndexError      < StandardError; end
   class OutOfRangeError < StandardError; end
+  class FileFormatError < StandardError; end
 
   DEFAULTS = {
     :paginate    => 10,

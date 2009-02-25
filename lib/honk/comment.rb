@@ -2,7 +2,9 @@ module Honk
   class Comment
     yaml_as "tag:honk.yapok.org,2009:Comment"
 
-    def yaml_initialize(values={})
+    attr_reader :author, :email, :website, :timestamp, :contents
+
+    def yaml_initialize(tag, values)
       values.each do |k,v|
         instance_variable_set "@#{k}", v
       end
