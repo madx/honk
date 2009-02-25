@@ -6,6 +6,9 @@ include Honk
 
 # configuration
 Honk.setup do
+  comment_filter { |s|
+    Haml::Helpers.html_escape s
+  }
 end
 
 configure do
