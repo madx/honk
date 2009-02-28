@@ -30,7 +30,7 @@ helpers do
     comment_string = "#{post.comments.length} comment"
     comment_string << 's' if post.comments.length != 1
     partial %Q{
-      %%a{:href => '/post/%s', :title => 'View comments for this post'} %s
+    %%a{:href => '/post/%s#comments', :title => 'View comments for this post'} %s
     }.gsub("\n", '').strip % [post.slug, comment_string]
   end
 end

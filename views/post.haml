@@ -23,7 +23,7 @@
 
 - unless @short
   - if @post.commentable
-    %h3 Comments
+    %h3#comments Comments
     .post-comments
       - @post.comments.each_with_index do |c, n|
         %div.comment{:id => "comment-%s" % n}
