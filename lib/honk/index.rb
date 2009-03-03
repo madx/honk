@@ -3,7 +3,9 @@ module Honk
     yaml_as "tag:honk.yapok.org,2009:Index"
 
     def yaml_initialize(tag, array)
-      raise FileFormatError unless array.is_a?(Array) && array[0].is_a?(Hash)
+      unless array.is_a?(Array) && array.inject(true) {|b,e| e.is_a?(Hash) }
+        raise FileFormatError, "not a valid index"
+      end
       @@list = []
       @@mapping = {}
       for entry in array

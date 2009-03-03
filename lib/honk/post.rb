@@ -6,6 +6,7 @@ module Honk
                 :file, :comments
 
     def yaml_initialize(tag, values)
+      raise FileFormatError, "not a valid Post" unless values.is_a? Hash
       values.each do |k,v|
         instance_variable_set "@#{k}", v
       end
@@ -16,21 +17,12 @@ module Honk
         begin
           comment_file = Honk.root / 'posts' / @file.gsub(/\.yml$/, '.comments.yml')
           if File.exist? comment_file
-            docs = YAML.load_stream(File.read(comment_file)).documents
-            if docs.inject(true) {|b,d| b &&= d.is_a?(Comment) }
-              @comments = docs
-            else
-              raise FileFormatError
-            end
-          else 
-            [] 
-          end
+            @comments = YAML.load_stream(File.read(comment_file)).documents
+          else [] end
         rescue NoMethodError, FileFormatError
           []
         end
-      else 
-        @comments 
-      end
+      else @comments end
     end
 
     class << self
