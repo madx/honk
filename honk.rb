@@ -15,6 +15,12 @@ configure do
   set :haml, :attr_wrapper => '"'
 end
 
+class String
+  def sanitize_line_ends!
+    gsub!("\r\n", "\n")
+  end
+end
+
 YAML.load_file(Honk.root / 'index.yml')
 
 helpers do
@@ -23,15 +29,26 @@ helpers do
   end
 
   def tag_link(t)
-    partial "%a{:href => '/tag/#{t}', :title => 'View posts tagged #{t}'} #{t}"
+    partial '%%a{:href => "/tag/%s", :title => "View posts tagged %s"} %s' %
+      [t, t, t]
   end
 
   def comments_link(post)
     comment_string = "#{post.comments.length} comment"
     comment_string << 's' if post.comments.length != 1
-    partial %Q{
-    %%a{:href => '/post/%s#comments', :title => 'View comments for this post'} %s
-    }.gsub("\n", '').strip % [post.slug, comment_string]
+    params = {
+      :href => "/post/#{post.slug}#comments",
+      :title => 'View comments for this post'
+    }
+    partial '%%a{%s} %s' % [params.inspect, comment_string]
+  end
+
+  def field(name, caption, required = true)
+    s =  '%%label{:for => "%s"} %s' % [name, caption]
+    s << "\n"
+    s << '%%input{:type => "text", :name => "%s", :id => "%s", :class => "%s"}'%
+      [name, name, required ? 'required' : 'optional' ]
+    partial s
   end
 end
 
@@ -58,10 +75,22 @@ get '/post/:name' do
   end
 end
 
+post '/post/:name' do
+  if params['website'].empty?
+    params['website'] = nil
+  else
+    unless params['website'][0..6] == 'http://'
+      params['website'] = "http://#{params['website']}"
+    end
+  end
+  params['contents'].sanitize_line_ends!
+  params.inspect.gsub('<', '&lt;').gsub('>', '&gt;')
+end
+
 get '/feed' do
 end
 
 get '/_reload' do
   YAML.load_file(Honk.root / 'index.yml')
-  "reloaded."
+  'reloaded.'
 end
