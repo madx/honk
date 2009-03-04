@@ -44,17 +44,26 @@ helpers do
     partial '%%a{%s} %s' % [params.inspect, comment_string]
   end
 
-  def field(name, caption, required = true)
+  def field(name, caption)
     s =  '%%label{:for => "%s"} %s' % [name, caption]
     s << "\n"
-    s << '%%input{:type => "text", :name => "%s", :id => "%s", :class => "%s"}'%
-      [name, name, required ? 'required' : 'optional' ]
+    if @errors
+        member = @errors.member?(name.to_sym)
+      s << '%%input{:type => "text", :name => "%s", :id => "%s", :class => "%s"}'%
+        [name, name, member ? 'error' : '']
+      if member
+        s << "\n"
+        s << '%span This field is required'
+      end
+    else
+      s << '%%input{:type => "text", :name => "%s", :id => "%s"}'%
+        [name, name]
+    end
     partial s
   end
 end
 
 # Errors
-class CommentFieldError < ArgumentError; end
 class IndexError; end
 class NoSuchPost < NameError; end
 
@@ -82,23 +91,47 @@ end
 
 post '/post/:name' do
   if Index.has?(params[:name])
-    args = {
-      :author    => params[:author],
-      :email     => params[:email],
-      :website   => params[:website].empty? ? nil : params[:website],
-      :contents  => Honk.comment_filter.call(
-        params[:contents].sanitize_line_ends
-      ),
-      :timestamp => Time.now
-    }
-    comment_file = Index.resolve(params[:name]).gsub!(/\.yml$/, '.comments.yml')
-    comment_file = Honk.root / 'posts' / comment_file
-    unless args[:website][0..6] == 'http://'
-        args[:website] = "http://#{args[:website]}"
+
+    @errors = []
+    @errors << :author if params[:author].empty?
+    @errors << :email  if params[:email].empty?
+
+    unless @errors.empty?
+      begin
+        @post = Post.open params[:name], Index.resolve(params[:name])
+      rescue Errno::ENOENT
+        raise IndexError, params[:name]
+      end
+      haml :post
+
+    else
+      args = {
+        :author    => params[:author],
+        :email     => params[:email],
+        :website   => params[:website].empty? ? nil : params[:website],
+        :contents  => Honk.comment_filter.call(
+          params[:contents].sanitize_line_ends
+        ),
+        :timestamp => Time.now
+      }
+
+      unless args[:website][0..6] == 'http://'
+          args[:website] = "http://#{args[:website]}"
+      end
+
+      begin
+        comment_file = Index.resolve(params[:name]).
+          gsub!(/\.yml$/, '.comments.yml')
+      rescue
+        raise IndexError, params[:name]
+      end
+
+      comment_file = Honk.root / 'posts' / comment_file
+      comment = Comment.new args
+      File.open(comment_file, 'a') {|f| comment.write(f) }
+
+      redirect request.env['REQUEST_URI']
     end
-    comment = Comment.new args
-    File.open(comment_file, 'a') {|f| comment.write(f) }
-    redirect request.env['REQUEST_URI']
   else raise NoSuchPost, params[:name] end
 end
 

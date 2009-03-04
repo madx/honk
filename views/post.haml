@@ -40,10 +40,10 @@
             = c.contents
     %h3 Add your comment
     .post-add-comment
-      %form{:action => env["REQUEST_URI"], :method => "post"}
+      %form{:action => request.env["REQUEST_URI"], :method => "post"}
         %p= field "author", "Name"
         %p= field "email", "E-mail"
-        %p= field "website", "Website", false
+        %p= field "website", "Website"
         %p
           %label{:for => "contents"} Your comment:
           %textarea{:name => "contents", :rows => 15, :cols => 50}
