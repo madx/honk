@@ -6,8 +6,8 @@ require File.join(File.dirname(__FILE__), 'lib', 'honk')
 include Honk
 
 class String
-  def sanitize_line_ends!
-    gsub!("\r\n", "\n")
+  def sanitize_line_ends
+    gsub("\r\n", "\n")
   end
 end
 
@@ -15,7 +15,7 @@ end
 # Configuration
 Honk.setup do
   comment_filter { |s|
-    Haml::Helpers.html_escape s
+    Rack::Utils.escape_html s
   }
 end
 
@@ -85,18 +85,22 @@ end
 post '/post/:name' do
   if Index.has?(params[:name])
     args = {
-      :author      => params[:author],
+      :author    => params[:author],
       :email     => params[:email],
       :website   => params[:website].empty? ? nil : params[:website],
       :contents  => Honk.comment_filter.call(
-        params[:contents].sanitize_line_ends!
+        params[:contents].sanitize_line_ends
       ),
       :timestamp => Time.now
     }
+    comment_file = Index.resolve(params[:name]).gsub!(/\.yml$/, '.comments.yml')
+    comment_file = Honk.root / 'posts' / comment_file
     unless args[:website][0..6] == 'http://'
         args[:website] = "http://#{args[:website]}"
     end
-    args.inspect.gsub('<', '&lt;').gsub('>', '&gt;')
+    comment = Comment.new args
+    File.open(comment_file, 'a') {|f| comment.write(f) }
+    redirect request.env['REQUEST_URI']
   else raise Sinatra::NotFound end
 end
 
