@@ -2,9 +2,17 @@
   require lib
 end
 require File.join(File.dirname(__FILE__), 'lib', 'honk') 
+
 include Honk
 
-# configuration
+class String
+  def sanitize_line_ends!
+    gsub!("\r\n", "\n")
+  end
+end
+
+
+# Configuration
 Honk.setup do
   comment_filter { |s|
     Haml::Helpers.html_escape s
@@ -15,14 +23,7 @@ configure do
   set :haml, :attr_wrapper => '"'
 end
 
-class String
-  def sanitize_line_ends!
-    gsub!("\r\n", "\n")
-  end
-end
-
-YAML.load_file(Honk.root / 'index.yml')
-
+# Helpers
 helpers do
   def partial(name, opts={})
     haml name, opts.merge(:layout => false)
@@ -52,6 +53,14 @@ helpers do
   end
 end
 
+# Errors
+class CommentFieldError < ArgumentError; end
+
+# Load the index file
+YAML.load_file(Honk.root / 'index.yml')
+
+# --- Main app starts here ---
+
 get '/' do
   page_num = params[:page].to_i || 0
   begin
@@ -70,21 +79,25 @@ get '/post/:name' do
       raise Sinatra::NotFound
     end
     haml :post
-  else
-    raise Sinatra::NotFound
-  end
+  else raise Sinatra::NotFound end
 end
 
 post '/post/:name' do
-  if params['website'].empty?
-    params['website'] = nil
-  else
-    unless params['website'][0..6] == 'http://'
-      params['website'] = "http://#{params['website']}"
+  if Index.has?(params[:name])
+    args = {
+      :author      => params[:author],
+      :email     => params[:email],
+      :website   => params[:website].empty? ? nil : params[:website],
+      :contents  => Honk.comment_filter.call(
+        params[:contents].sanitize_line_ends!
+      ),
+      :timestamp => Time.now
+    }
+    unless args[:website][0..6] == 'http://'
+        args[:website] = "http://#{args[:website]}"
     end
-  end
-  params['contents'].sanitize_line_ends!
-  params.inspect.gsub('<', '&lt;').gsub('>', '&gt;')
+    args.inspect.gsub('<', '&lt;').gsub('>', '&gt;')
+  else raise Sinatra::NotFound end
 end
 
 get '/feed' do
