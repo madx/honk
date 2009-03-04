@@ -13,11 +13,7 @@ end
 
 
 # Configuration
-Honk.setup do
-  comment_filter { |s|
-    Rack::Utils.escape_html s
-  }
-end
+require File.join(File.dirname(__FILE__), 'config')
 
 configure do
   set :haml, :attr_wrapper => '"'
