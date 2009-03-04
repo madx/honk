@@ -55,6 +55,8 @@ end
 
 # Errors
 class CommentFieldError < ArgumentError; end
+class IndexError; end
+class NoSuchPost < NameError; end
 
 # Load the index file
 YAML.load_file(Honk.root / 'index.yml')
@@ -63,11 +65,7 @@ YAML.load_file(Honk.root / 'index.yml')
 
 get '/' do
   page_num = params[:page].to_i || 0
-  begin
-    @posts = Index.page page_num
-  rescue Honk::OutOfRangeError
-    raise Sinatra::NotFound
-  end
+  @posts = Index.page page_num
   haml :index 
 end
 
@@ -76,10 +74,10 @@ get '/post/:name' do
     begin
       @post = Post.open params[:name], Index.resolve(params[:name])
     rescue Errno::ENOENT
-      raise Sinatra::NotFound
+      raise IndexError, params[:name]
     end
     haml :post
-  else raise Sinatra::NotFound end
+  else raise NoSuchPost, params[:name] end
 end
 
 post '/post/:name' do
@@ -101,7 +99,7 @@ post '/post/:name' do
     comment = Comment.new args
     File.open(comment_file, 'a') {|f| comment.write(f) }
     redirect request.env['REQUEST_URI']
-  else raise Sinatra::NotFound end
+  else raise NoSuchPost, params[:name] end
 end
 
 get '/feed' do
@@ -110,4 +108,27 @@ end
 get '/_reload' do
   YAML.load_file(Honk.root / 'index.yml')
   'reloaded.'
+end
+
+not_found do
+  haml :not_found
+end
+
+error Honk::OutOfRangeError do
+  @message = "There are not that many posts on this blog!"
+  haml :not_found
+end
+
+error NoSuchPost do
+  @message = %Q{
+    There's no such post <strong>#{request.env['sinatra.error'].message}</strong>.
+  }
+  haml :not_found
+end
+
+error IndexError do
+  @message = %Q{
+    The file associated with #{request.env['sinatra.error'].message} couldn't
+    be found. Please report this error to the author.
+  }
 end
