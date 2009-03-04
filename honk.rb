@@ -139,8 +139,12 @@ get '/feed' do
 end
 
 get '/_reload' do
-  YAML.load_file(Honk.root / 'index.yml')
-  'reloaded.'
+  begin
+    YAML.load_file(Honk.root / 'index.yml')
+    'reloaded.'
+  rescue Honk::FileFormatError
+    'file format error'
+  end
 end
 
 not_found do
