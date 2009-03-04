@@ -1,7 +1,7 @@
 %w[rubygems sinatra pathname].each do |lib|
   require lib
 end
-require File.join(File.dirname(__FILE__), 'lib', 'honk') 
+require File.join(File.dirname(__FILE__), 'lib', 'honk')
 
 include Honk
 
@@ -28,6 +28,18 @@ helpers do
   def tag_link(t)
     partial '%%a{:href => "/tag/%s", :title => "View posts tagged %s"} %s' %
       [t, t, t]
+  end
+
+  def stylesheet(*names)
+    out = ''
+    names.each do |name|
+      args = {
+        :rel => "stylesheet", :type => "text/css",
+        :media => "screen", :href => "/css/#{name}.css"
+      }
+      out << partial("%%link{%s}" % args.inspect)
+    end
+    out
   end
 
   def comments_link(post)
@@ -71,7 +83,7 @@ YAML.load_file(Honk.root / 'index.yml')
 get '/' do
   page_num = params[:page].to_i || 0
   @posts = Index.page page_num
-  haml :index 
+  haml :index
 end
 
 get '/post/:name' do
@@ -141,6 +153,12 @@ get '/_reload' do
   rescue Honk::FileFormatError
     'file format error'
   end
+end
+
+get '/css/:stylesheet.css' do
+  content_type 'text/css', :encoding => 'utf-8'
+  stylesheet = params[:stylesheet] + '.css'
+  File.read(File.join(File.dirname(__FILE__), 'css', stylesheet))
 end
 
 not_found do
