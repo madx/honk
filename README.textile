@@ -109,11 +109,15 @@ h3. Configuration options
 * @root@: tells honk where to find the posts, index and tags files, default is
   the same dir as you blog, but you can change this to put your content
   elsewhere.
-* @formatter@: the name of the gem to require to enable formatting, pass nil
-  to disable it. Using a formatter automatically sets a default @format_proc@
-  but you can still change that later.
+* @formatter@: the name of the gem to require to enable formatting.
+  Using a formatter automatically sets a default @format_proc@ but you can still
+  change that later.
 * @format_proc@: a proc that returns your formatted post. The argument is 
   the contents of the post being formatted.
+* @comment_filter@: a proc that returns the filtered text for a comment. This is
+  useful for escaping HTML, allowing formatting, etc.
+* @meta@: defines metadata for your blog such as author's name, email, a
+  title...
 
 If you want more tweaking, you can still hack the source, it's open.
 
