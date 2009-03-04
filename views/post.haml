@@ -1,9 +1,5 @@
 - @title = '- ' + @post.title
-- if @short
-  %h2
-    %a{:href => "/post/#{@post.slug}", :title => "View this post"}= @post.title
-- else
-  %h2= @post.title
+%h2= @short ? post_link(@post) : @post.title
 .post-contents
   = Honk.format_proc.call @post.contents
 .post-details

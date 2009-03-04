@@ -30,6 +30,11 @@ helpers do
       [t, t, t]
   end
 
+  def post_link(p)
+    partial '%%a{:href => "/post/%s", :title => "View this post"} %s' %
+      [p.slug, p.title]
+  end
+
   def stylesheet(*names)
     out = ''
     names.each do |name|
@@ -72,11 +77,12 @@ helpers do
 end
 
 # Errors
-class IndexError; end
 class NoSuchPost < NameError; end
+class NoSuchTag  < NameError; end
 
-# Load the index file
+# Load the index and tags file
 YAML.load_file(Honk.root / 'index.yml')
+YAML.load_file(Honk.root / 'tags.yml')
 
 # --- Main app starts here ---
 
@@ -95,6 +101,20 @@ get '/post/:name' do
     end
     haml :post
   else raise NoSuchPost, params[:name] end
+end
+
+get '/tag/:tag' do
+  if Tag.exists?(params[:tag])
+    @posts = Tag.get(params[:tag]).collect do |post|
+      Post.open(post, Index.resolve(post))
+    end
+    haml :tag
+  else raise NoSuchTag, params[:tag] end
+end
+
+get '/tags' do
+  @tags = Tag.sorted_list
+  haml :tags
 end
 
 post '/post/:name' do
@@ -173,6 +193,16 @@ end
 error NoSuchPost do
   @message = %Q{
     There's no such post <strong>#{request.env['sinatra.error'].message}</strong>.
+  }
+  haml :not_found
+end
+
+error NoSuchTag do
+  @message = %Q{
+    There's no such tag <strong>#{request.env['sinatra.error'].message}</strong>.
+    <br />
+    Maybe you can search on <a href="/tags" title="View the tag list">the tags
+    page</a>.
   }
   haml :not_found
 end

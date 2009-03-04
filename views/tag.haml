@@ -1,0 +1,4 @@
+%h2== Posts tagged <em>#{params[:tag]}</em>
+
+- @posts.each do |post|
+  %p= post_link(post)

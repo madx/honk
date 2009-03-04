@@ -10,7 +10,7 @@ describe Index do
       Index.resolve("a_post").should eql("a_post.yml")
     end
 
-    it "should raise an error if the content of the yaml file is not a hash" do
+    it "should raise an error if the file format is wrong" do
       lambda {
         YAML.load("--- !honk.yapok.org,2009/Index\n- foo")
       }.should raise_error(FileFormatError)

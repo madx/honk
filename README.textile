@@ -49,18 +49,12 @@ this file.
 
 h3. Tags
 
-Next, the @tags.yml@ file is a more complicated one with two mappings: one that
-maps your different tags to your posts, and one that do the opposite. Thus, the
-file maybe a little be difficult to manage without screwing everything up, so I
-strongly advise you to use the Thor commands to manage your tags.
+Next, the @tags.yml@ file is simply a mapping that associates each tag with a
+list of posts. 
 
 Here's an example @tags.yml@
 
-<pre><code>--- !honk.yapok.org,2009/TagsPerPost
-a_post:
-  - a_tag
-  - another_one
---- !honk.yapok.org,2009/PostsPerTag
+<pre><code>--- !honk.yapok.org,2009/Tags
 a_tag:
   - a_post
 another_one:

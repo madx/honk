@@ -1,0 +1,9 @@
+--- !honk.yapok.org,2009/Tags
+foo:
+  - a_post
+bar:
+  - a_post
+overused:
+  - a_post
+  - another_one
+  - etc
