@@ -57,22 +57,42 @@ helpers do
     partial '%%a{%s} %s' % [params.inspect, comment_string]
   end
 
-  def field(name, caption)
-    s =  '%%label{:for => "%s"} %s' % [name, caption]
-    s << "\n"
-    if @errors
-        member = @errors.member?(name.to_sym)
-      s << '%%input{:type => "text", :name => "%s", :id => "%s", :class => "%s"}'%
-        [name, name, member ? 'error' : '']
-      if member
-        s << "\n"
-        s << '%span This field is required'
-      end
-    else
-      s << '%%input{:type => "text", :name => "%s", :id => "%s"}'%
-        [name, name]
+  def label_tag(name, caption)
+    '%%label{:for => "%s"} %s: ' % [name, caption]
+  end
+
+  def input_field(name, caption)
+    value = params[name.to_sym] ? params[name.to_sym] : ''
+    template = label_tag(name, caption) + "\n"
+    member = @errors && @errors.member?(name.to_sym)
+    args = {
+      :type => "text", :name => name, :id => name,
+      :class => member ? "error" : "", :value => value
+    }
+    template << '%%input{%s}' % args.inspect
+
+    if member
+      template << "\n"
+      template << '%span.error This field is required'
     end
-    partial s
+    partial template
+  end
+
+  def text_field(name, caption)
+    contents = params[name.to_sym] ? params[name.to_sym] : ''
+    template = label_tag(name, caption) + "\n"
+    member = @errors && @errors.member?(name.to_sym)
+    args = {
+      :name => name, :id => name, :rows => 15, :cols => 50,
+      :class => member ? "error" : ""
+    }
+    template << '%%textarea{%s} %s' % [args.inspect, contents]
+
+    if member
+      template << "\n"
+      template << '%span.error This field is required'
+    end
+    partial template
   end
 end
 
@@ -121,8 +141,11 @@ post '/post/:name' do
   if Index.has?(params[:name])
 
     @errors = []
-    @errors << :author if params[:author].empty?
-    @errors << :email  if params[:email].empty?
+    @errors << :author   if params[:author].strip.empty?
+    @errors << :email    if params[:email].strip.empty?
+    if params[:contents].empty? || params[:contents] =~ /\A\s+\Z/
+      @errors << :contents
+    end
 
     unless @errors.empty?
       begin
