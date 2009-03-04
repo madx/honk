@@ -9,8 +9,7 @@ module Honk
       initialize(values)
     end
 
-    def initialize(post_slug, params={})
-      @post = post_slug
+    def initialize(params={})
       params.each do |k,v|
         instance_variable_set "@#{k}", v
       end
@@ -28,6 +27,10 @@ module Honk
           end
         end
       end
+    end
+
+    def write(fileish)
+      fileish << YAML.dump(self)
     end
 
   end
