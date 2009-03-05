@@ -35,6 +35,18 @@ helpers do
       [p.slug, p.title]
   end
 
+  def tag_url(t)
+    "http://" + File.join(Honk.meta[:domain], 'tag', t)
+  end
+
+  def post_url(p)
+    "http://" + File.join(Honk.meta[:domain], 'post', p.slug)
+  end
+
+  def blog_url
+    "http://" + Honk.meta[:domain] + '/'
+  end
+
   def stylesheet(*names)
     out = ''
     names.each do |name|
@@ -186,7 +198,14 @@ post '/post/:name' do
   else raise NoSuchPost, params[:name] end
 end
 
-get '/feed' do
+get '/atom.xml' do
+  @posts = Index.page 0
+  builder :atom
+end
+
+get '/rss.xml' do
+  @posts = Index.page 0
+  builder :rss
 end
 
 get '/_reload' do
