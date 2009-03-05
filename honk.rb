@@ -52,11 +52,15 @@ helpers do
     names.each do |name|
       args = {
         :rel => "stylesheet", :type => "text/css",
-        :media => "screen", :href => "/css/#{name}.css"
+        :media => "screen", :href => versioned_css("/css/#{name}.css")
       }
       out << partial("%%link{%s}" % args.inspect)
     end
     out
+  end
+
+  def versioned_css(file)
+    "%s?%s" % [file, File.mtime(File.join(File.dirname(__FILE__), file)).to_i]
   end
 
   def comments_link(post)
@@ -220,6 +224,7 @@ end
 get '/css/:stylesheet.css' do
   content_type 'text/css', :encoding => 'utf-8'
   stylesheet = params[:stylesheet] + '.css'
+  response['Expires'] = (Time.now + 60*60*24*365*3).httpdate
   File.read(File.join(File.dirname(__FILE__), 'css', stylesheet))
 end
 
