@@ -175,7 +175,7 @@ post '/post/:name' do
       args = {
         :author    => params[:c_author],
         :email     => params[:c_email],
-        :website   => params[:c_website].empty? ? nil : params[:c_website],
+        :website   => params[:c_website],
         :contents  => Honk.comment_filter.call(
           params[:c_contents].sanitize_line_ends
         ),
@@ -183,8 +183,9 @@ post '/post/:name' do
       }
 
       unless args[:website][0..6] == 'http://'
-          args[:website] = "http://#{args[:website]}"
+        args[:website] = "http://#{args[:website]}"
       end
+      args[:website] = nil if args[:website].empty?
 
       begin
         comment_file = Index.resolve(params[:name]).
