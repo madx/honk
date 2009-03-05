@@ -153,10 +153,10 @@ post '/post/:name' do
   if Index.has?(params[:name])
 
     @errors = []
-    @errors << :author   if params[:author].strip.empty?
-    @errors << :email    if params[:email].strip.empty?
-    if params[:contents].empty? || params[:contents] =~ /\A\s+\Z/
-      @errors << :contents
+    @errors << :c_author   if params[:c_author].strip.empty?
+    @errors << :c_email    if params[:c_email].strip.empty?
+    if params[:c_contents].empty? || params[:c_contents] =~ /\A\s+\Z/
+      @errors << :c_contents
     end
 
     unless @errors.empty?
@@ -169,11 +169,11 @@ post '/post/:name' do
 
     else
       args = {
-        :author    => params[:author],
-        :email     => params[:email],
-        :website   => params[:website].empty? ? nil : params[:website],
+        :author    => params[:c_author],
+        :email     => params[:c_email],
+        :website   => params[:c_website].empty? ? nil : params[:c_website],
         :contents  => Honk.comment_filter.call(
-          params[:contents].sanitize_line_ends
+          params[:c_contents].sanitize_line_ends
         ),
         :timestamp => Time.now
       }

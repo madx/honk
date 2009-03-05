@@ -37,10 +37,10 @@
     %h3 Add your comment
     .post-add-comment
       %form{:action => request.env["REQUEST_URI"], :method => "post"}
-        %p= input_field "author", "Name"
-        %p= input_field "email", "E-mail"
-        %p= input_field "website", "Website"
-        %p= text_field  "contents", "Your comment"
+        %p= input_field "c_author", "Name"
+        %p= input_field "c_email", "E-mail"
+        %p= input_field "c_website", "Website"
+        %p= text_field  "c_contents", "Your comment"
         %p
           %input{:type => "submit", :value => "Send"}
 
