@@ -3,22 +3,41 @@ module Honk
     yaml_as "tag:honk.yapok.org,2009:Index"
 
     def yaml_initialize(tag, array)
+      @@tag = tag
       unless array.is_a?(Array) && array.inject(true) {|b,e| e.is_a?(Hash) }
         raise FileFormatError, "not a valid index"
       end
       @@list = []
-      @@mapping = {}
+      @@map = {}
       for entry in array
         @@list << (key = entry.keys.first)
         entry[key] = key + ".yml" if entry[key].nil?
-        @@mapping.update(entry)
+        @@map.update(entry)
       end
-      raise IndexError if @@list.length != @@mapping.keys.length
+      raise IndexError if @@list.length != @@map.keys.length
+    end
+
+    def self.dump
+      YAML.quick_emit(object_id, {}) do |out|
+        out.seq(@@tag, to_yaml_style) do |seq|
+          @@list.each do |k|
+            seq.add({k, @@map[k]})
+          end
+        end
+      end
     end
   
     class << self
       def has?(name)
         @@list.member?(name)
+      end
+
+      def list
+        @@list
+      end
+
+      def map
+        @@map
       end
 
       def fetch(range)
@@ -34,7 +53,15 @@ module Honk
       end
 
       def resolve(slug)
-        @@mapping[slug]
+        @@map[slug]
+      end
+
+      def push(map)
+        key = map.keys.first
+        unless @@list.member?(key)
+          @@map.update(map)
+          @@list.unshift(key)
+        end
       end
     end
 
