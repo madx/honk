@@ -38,7 +38,7 @@ describe Comment do
       out.should eql(YAML.dump(@c))
     end
 
-    it "should append it if there are already comments" do
+    it "should append it if there already are comments" do
       out = ""
       @c.write(out)
       @c.write(out)

@@ -32,4 +32,35 @@ describe Post do
       post.comments.should be_empty
     end
   end
+
+  describe "#initialize" do
+    it "should set the instance variables" do
+      p = Post.new :foo => :bar
+      p.instance_variables.should eql(["@foo"])
+    end
+  end
+
+  describe "#write" do
+    before do
+      @p = Post.new(
+        :title => "foo", :tags => ['a', 'b'],
+        :timestap => Time.now, :commentable => true,
+        :contents => "<p>This is a post</p>"
+      )
+    end
+
+    it "should write de dump to a file" do
+      out = ""
+      @p.write(out)
+      out.should eql(YAML.dump(@p))
+    end
+
+    it "should append it if there already are posts" do
+      out = ""
+      @p.write(out)
+      @p.write(out)
+      out.should_not eql(YAML.dump(@p))
+    end
+  end
+
 end
