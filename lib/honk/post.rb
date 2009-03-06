@@ -2,8 +2,8 @@ module Honk
 
   class Post
     yaml_as "tag:honk.yapok.org,2009:Post"    
-    attr_reader :title, :tags, :timestamp, :contents, :commentable, :slug,
-                :file, :comments
+    attr_accessor :title, :tags, :timestamp, :contents, :commentable, :slug,
+                  :file, :comments
 
     def yaml_initialize(tag, values)
       raise FileFormatError, "not a valid Post" unless values.is_a? Hash
