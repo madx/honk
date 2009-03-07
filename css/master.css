@@ -80,7 +80,7 @@ h1 {
   top: 0;
   left: 72%;
 }
-#contents .pagination {
+#contents .navigation, #contents .pagination {
   text-align: center;
   font-size: 1.2em;
 }
