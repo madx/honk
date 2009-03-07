@@ -247,9 +247,14 @@ end
 get '/_reload' do
   begin
     YAML.load_file(Honk.root / 'index.yml')
+    begin
+      YAML.load_file(Honk.root / 'tags.yml')
+    rescue Honk::FileFormatError
+      'tags file format error'
+    end
     'reloaded.'
   rescue Honk::FileFormatError
-    'file format error'
+    'index file format error'
   end
 end
 
