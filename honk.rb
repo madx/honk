@@ -73,6 +73,14 @@ helpers do
     partial '%%a{%s} %s' % [params.inspect, comment_string]
   end
 
+  def author_mailto_link
+    email = Honk.meta[:email].gsub('@', 'REMOVETHIS@').gsub('.', 'DOT')
+    args = {
+      :href => "mailto:#{email}", :title => "Send a mail to the author"
+    }
+    partial "%%a{%s} %s" % [args.inspect, email]
+  end
+
   def label_tag(name, caption)
     '%%label{:for => "%s"} %s: ' % [name, caption]
   end
@@ -256,6 +264,12 @@ not_found do
   haml :not_found
 end
 
+configure :production do
+  error do
+    haml :error
+  end
+end
+
 error Honk::OutOfRangeError do
   @message = "There are not that many posts on this blog!"
   haml :not_found
@@ -281,6 +295,7 @@ end
 error IndexError do
   @message = %Q{
     The file associated with #{request.env['sinatra.error'].message} couldn't
-    be found. Please report this error to the author.
+    be found.
   }
+  haml :error
 end
