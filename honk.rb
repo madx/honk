@@ -78,7 +78,7 @@ helpers do
   end
 
   def input_field(name, caption)
-    value = params[name.to_sym] ? params[name.to_sym] : ''
+    value = params[name.to_sym] || request.cookies[name[2..-1]] || ''
     template = label_tag(name, caption) + "\n"
     member = @errors && @errors.member?(name.to_sym)
     args = {
@@ -95,7 +95,7 @@ helpers do
   end
 
   def text_field(name, caption)
-    contents = params[name.to_sym] ? params[name.to_sym] : ''
+    contents = params[name.to_sym] || ''
     template = label_tag(name, caption) + "\n"
     member = @errors && @errors.member?(name.to_sym)
     args = {
@@ -108,6 +108,16 @@ helpers do
       template << "\n"
       template << '%span.error This field is required'
     end
+    partial template
+  end
+
+  def remember_check_box
+    args = {
+      :name => "c_remember", :id => "c_remember",
+      :type => "checkbox"
+    }
+    if request.cookies["remember"] then args["checked"] = "checked" end
+    template = "%%input{%s}" % args.inspect
     partial template
   end
 end
@@ -186,6 +196,18 @@ post '/post/:name' do
         args[:website] = "http://#{args[:website]}"
       end
       args[:website] = nil if args[:website].empty?
+
+      if params[:c_remember]
+        [:author, :email, :website].each do |field|
+          response.set_cookie(field.to_s, :value => args[field])
+        end
+        response.set_cookie("remember", true)
+      else
+        [:author, :email, :website].each do |field|
+          response.delete_cookie(field.to_s)
+        end
+        response.delete_cookie("remember")
+      end
 
       begin
         comment_file = Index.resolve(params[:name]).

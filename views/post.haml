@@ -42,6 +42,9 @@
         %p= input_field "c_website", "Website"
         %p= text_field  "c_contents", "Your comment"
         %p
+          %label{:for => "c_remember"} Remember me?
+          = remember_check_box
+        %p
           %input{:type => "submit", :value => "Send"}
 
   - else
