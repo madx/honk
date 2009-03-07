@@ -37,4 +37,25 @@ describe Index do
       lambda { Index.fetch(10..11) }.should raise_error(Honk::OutOfRangeError)
     end
   end
+
+  describe "pagination" do
+    before do
+      index = []
+      0.upto(99) {|i| index << {"post#{i}", "post#{i}.yml"} }
+      YAML.load YAML.dump(index).gsub('---', '--- !honk.yapok.org,2009/Index')
+    end
+
+    describe ".pages" do
+      it "should return the number of pages when called with no argument" do
+        Index.pages.should eql(10)  
+      end
+
+      it "should return the page for a post when called with a slug" do
+        Index.pages("post0").should eql(0)
+        Index.pages("post55").should eql(5)
+      end
+    end
+  end
+
+
 end

@@ -52,6 +52,10 @@ module Honk
         fetch start...(start + Honk.paginate)
       end
 
+      def pages(slug=nil)
+        (@@list.index(slug) || @@list.length) / Honk.paginate
+      end
+
       def resolve(slug)
         @@map[slug]
       end
