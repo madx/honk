@@ -16,18 +16,17 @@ a:hover, a:active, a:focus {
   color: #444;
 }
 
-h1, #contents {
+h1 {
   background-color: white;
   margin: 0;
-}
-
-h1 {
   padding: 0.5em 1em;
   border-left: 1px solid #dfdfdf;
   border-right: 1px solid #dfdfdf;
 }
 
 #contents {
+  background-color: white;
+  margin: 0;
   padding: 0.5em 1em;
   border-left: 1px solid #dfdfdf;
   border-right: 1px solid #dfdfdf;
@@ -80,6 +79,24 @@ h1 {
   position: absolute;
   top: 0;
   left: 72%;
+}
+#contents .pagination {
+  text-align: center;
+  font-size: 1.2em;
+}
+#contents .pagination strong, #contents .pagination a {
+  padding: 2px 4px;
+  border: 1px solid;
+}
+#contents .pagination a {
+  border-color: #dfdfdf;
+}
+#contents .pagination a:hover {
+  background-color: #eee;
+}
+#contents .pagination strong {
+  border-color: white;
+  background-color: #dfdfdf;
 }
 
 #footer {

@@ -135,6 +135,7 @@ YAML.load_file(Honk.root / 'tags.yml')
 get '/' do
   page_num = params[:page].to_i || 0
   @posts = Index.page page_num
+  @page = Index.pages(@posts.first.slug)
   haml :index
 end
 
