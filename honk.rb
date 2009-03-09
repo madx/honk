@@ -85,6 +85,11 @@ helpers do
     '%%label{:for => "%s"} %s: ' % [name, caption]
   end
 
+  # Add error span if no member
+  def field_required(member, template)
+    member ? "\n" + '%span.error This field is required' : ''
+  end
+
   def input_field(name, caption)
     value = params[name.to_sym] || request.cookies[name[2..-1]] || ''
     template = label_tag(name, caption) + "\n"
@@ -94,13 +99,10 @@ helpers do
       :class => member ? "error" : "", :value => value
     }
     template << '%%input{%s}' % args.inspect
-
-    if member
-      template << "\n"
-      template << '%span.error This field is required'
-    end
+    template << field_required(member, template)
     partial template
   end
+
 
   def text_field(name, caption)
     contents = params[name.to_sym] || ''
@@ -111,11 +113,7 @@ helpers do
       :class => member ? "error" : ""
     }
     template << '%%textarea{%s} %s' % [args.inspect, contents]
-
-    if member
-      template << "\n"
-      template << '%span.error This field is required'
-    end
+    template << field_required(member, template)
     partial template
   end
 
