@@ -5,7 +5,6 @@ author = lambda {
 }
 
 xml.instruct! :xml, :version => "1.0"
-p request.env
 xml.feed :xmlns => "http://www.w3.org/2005/Atom" do
   xml.id blog_url 
   xml.title Honk.meta[:title]
