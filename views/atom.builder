@@ -22,7 +22,7 @@ xml.feed :xmlns => "http://www.w3.org/2005/Atom" do
       xml.link post_url(post), :rel => "alternate"
       xml.summary :type => "xhtml" do
         xml.div :xmlns => "http://www.w3.org/xhtml" do
-          xml << post.contents
+          xml << Honk.format_proc.call(post.contents)
         end
       end
       post.tags.each do |tag|

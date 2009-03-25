@@ -9,7 +9,7 @@ xml.rss :version => "2.0" do
       xml.item do
         xml.title post.title
         xml.link post_url(post) 
-        xml.description post.contents
+        xml.description Honk.format_proc.call(post.contents)
         xml.pubDate post.timestamp.httpdate 
         xml.guid post_url(post) 
       end
