@@ -10,7 +10,7 @@ module Honk
       values.each do |k,v|
         instance_variable_set "@#{k}", v
       end
-      @timestamp = Time.parse(@timestamp)
+      @timestamp = Time.parse(@timestamp) unless @timestamp.is_a?(Time)
     end
 
     def initialize(params={})
