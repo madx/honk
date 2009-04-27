@@ -1,11 +1,11 @@
 require File.join(File.dirname(__FILE__), 'helper')
 
-describe Comment do
+describe Honk::Comment do
 
   describe "#initialize" do
     it "should set the instance variables" do
-      c = Comment.new :foo => :bar
-      c.instance_variables.should eql(["@foo"])
+      c = Honk::Comment.new :foo => :bar
+      c.instance_variables.should == ["@foo"]
     end
   end
 
@@ -13,7 +13,7 @@ describe Comment do
     it "should raise an error if the file is not a comment" do
       lambda {
         YAML.load("--- !honk.yapok.org,2009/Comment\n- fail")
-      }.should raise_error(FileFormatError)
+      }.should.raise Honk::FileFormatError
     end
   end
 
@@ -21,13 +21,13 @@ describe Comment do
     it "should dump the comments in the right format" do
       yaml = File.read(Honk.root/'posts'/'yaml_dump_test.comments.yml')
       c = YAML.load(yaml)
-      YAML.dump(c).should eql(yaml)
+      YAML.dump(c).should == yaml
     end
   end
 
   describe "#write" do
     before do
-      @c = Comment.new(
+      @c = Honk::Comment.new(
         :author  => "foo",     :email => "bar@baz.com",
         :website => "baz.com", :timestamp => Time.now, :contents => "foo")
     end
@@ -35,14 +35,14 @@ describe Comment do
     it "should write the dump to a file" do
       out = ""
       @c.write(out)
-      out.should eql(YAML.dump(@c))
+      out.should == YAML.dump(@c)
     end
 
     it "should append it if there already are comments" do
       out = ""
       @c.write(out)
       @c.write(out)
-      out.should_not eql(YAML.dump(@c))
+      out.should.not == YAML.dump(@c)
     end
   end
 

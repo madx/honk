@@ -1,4 +1,5 @@
 require File.join(File.dirname(__FILE__), '..', 'lib', 'honk')
+require 'bacon'
 
 def reset_honk
   Honk.setup {
@@ -10,5 +11,3 @@ def reset_honk
 end
 
 reset_honk
-
-include Honk
