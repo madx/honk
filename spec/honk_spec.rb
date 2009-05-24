@@ -14,6 +14,10 @@ describe Honk do
       Honk.root '..'
       Honk.root.should == Pathname.new('..').expand_path
     end
+
+    it "should warn if the root doesn't exist" do
+      lambda { Honk.root "/foo/bar/baz" }.should.raise
+    end
   end
 
   describe '.paginate' do
@@ -38,7 +42,7 @@ describe Honk do
     end
 
     it "should raise an error if the proc arity is wrong" do
-      lambda { Honk.comment_filter {|a,b| a + b} }.should.raise ArgumentError
+      lambda { Honk.comment_filter {|a,b| a + b} }.should.raise
     end
   end
 

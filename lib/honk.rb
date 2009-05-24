@@ -38,7 +38,16 @@ module Honk
   end
 
   def self.root(path=nil)
-    path ? @@config[:root] = Pathname.new(path).expand_path : @@config[:root]
+    if path
+      pn = Pathname.new(path).expand_path
+      if pn.exist?
+        @@config[:root] = pn
+      else
+        raise "No such directory #{pn}"
+      end
+    else
+      @@config[:root]
+    end
   end
 
   def self.meta(hash=nil)
@@ -47,7 +56,9 @@ module Honk
 
   def self.comment_filter(&blk)
     if block_given?
-      raise ArgumentError if blk.arity != 1
+      if blk.arity != 1
+        raise "The comment_filter block should take one argument"
+      end
       @@config[:comment_filter] = blk
     else
       @@config[:comment_filter]

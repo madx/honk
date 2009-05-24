@@ -13,7 +13,13 @@ end
 
 
 # Configuration
-require File.join(File.dirname(__FILE__), 'config')
+begin
+  require File.join(File.dirname(__FILE__), 'config')
+rescue => e
+  puts "Configuration error :"
+  puts e.message
+  exit 1
+end
 
 configure do
   set :haml, :attr_wrapper => '"'
