@@ -1,15 +1,12 @@
 !!! Strict
 %html{html_attrs}
-  %head 
+  %head
     %title== #{Honk.meta[:title]} #{@title}
     %meta{"http-equiv" => "Content-Type", :content => "text/html;charset=utf-8"}
     %meta{:name => "author", :content => Honk.meta[:author]}
     = stylesheet :master
   %body
-    %h1
-      %a{:href => '/', :title => 'Back to the index'}= Honk.meta[:title]
+    = partial :header
     #contents
       = yield
-    %p#footer
-      Powered by <a href="http://github.com/madx/honk" 
-      title="A minimalistic, text-based blogging engine">Honk</a>.
+    = partial :footer
