@@ -16,27 +16,73 @@ a:hover, a:active, a:focus {
   color: #444;
 }
 
-h1 {
-  background-color: white;
+#header h1 {
+  margin: 0;
+  padding: 1em 1.5em;
+}
+#header p.navigation {
   margin: 0;
   padding: 0.5em 1em;
+  background-color: #f3f3f3;
   border-left: 1px solid #dfdfdf;
   border-right: 1px solid #dfdfdf;
+  border-bottom: 1px solid #dfdfdf;
 }
 
 #contents {
   background-color: white;
   margin: 0;
-  padding: 0.5em 1em;
-  border-left: 1px solid #dfdfdf;
-  border-right: 1px solid #dfdfdf;
-  border-bottom: 1px solid #dfdfdf;
+  padding: 0.75em;
+  border: 1px solid #dfdfdf;
 }
 #contents h2 {
   margin: 0;
+  padding: 0.25em 0.5em;
+  background-color: #333;
+}
+#contents h2 a {
+  color: #efefef;
 }
 #contents .post-contents {
   padding: 0.5em 1em;
+}
+#contents .post-contents code {
+  padding: 1px;
+  background-color: #666;
+  color: white;
+}
+#contents .post-contents .coderay {
+  background-color: #223;
+  padding: 5px;
+  margin: 1em;
+}
+#contents .post-contents .coderay code {
+  background: none;
+  padding: none;
+}
+#contents .post-contents .coderay .s {
+  color: #a8ff60;
+}
+#contents .post-contents .coderay .s .dl {
+  color: #336633;
+}
+#contents .post-contents .coderay .rx {
+  color: #b18a3d;
+}
+#contents .post-contents .coderay .rx .dl, #contents .post-contents .coderay .rx .mod {
+  color: #ff8000;
+}
+#contents .post-contents .coderay .r {
+  color: #96cbfe;
+}
+#contents .post-contents .coderay .cl, #contents .post-contents .coderay .co {
+  color: #ffffb6;
+}
+#contents .post-contents .coderay .fu {
+  color: #ffd2a7;
+}
+#contents .post-contents .coderay .pc, #contents .post-contents .coderay .sy {
+  color: #99cc99;
 }
 #contents .post-details {
   background-color: #efefef;
@@ -80,7 +126,7 @@ h1 {
   top: 0;
   left: 72%;
 }
-#contents .navigation, #contents .pagination {
+#contents .pagination {
   text-align: center;
   font-size: 1.2em;
 }

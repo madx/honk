@@ -10,11 +10,5 @@
       %a{:title => "Go to page #{page}", :href => "/?page=#{page}"}= page
   - if @page < Index.pages
     %a{:title => "Next page", :href => "/?page=#{@page+1}"} »
-%p.navigation
-  %a{:title => "View all available tags", :href => "/tags"} Tags
-  &ndash;
-  %a{:title => "Suscribe to the RSS feed", :href => "/rss.xml"} RSS
-  &ndash;
-  %a{:tilte => "Suscribe to the Atom feed", :href => "/atom.xml"} Atom
 
 - @title = ''
