@@ -14,8 +14,6 @@ module Honk
   DEFAULTS = {
     :paginate       => 10,
     :root           => Pathname.new('.').expand_path,
-    :formatter      => nil,
-    :format_proc    => lambda {|s| s },
     :comment_filter => lambda {|s| s },
     :meta        => {
       :author => "Honk default author",
@@ -25,68 +23,34 @@ module Honk
     }
   }
 
-  FORMAT_PROCS = {
-    :redcloth => lambda { |s|
-      rc = RedCloth.new(s)
-      rc.hard_breaks = false
-      rc.to_html
-    }
-  }
-
   @@config = DEFAULTS.dup
 
-  class << self
-    def setup(&blk)
-      instance_eval &blk
-    end
-    
-    def config
-      @@config
-    end
+  def self.setup(&blk)
+    instance_eval &blk
+  end
 
-    def paginate(count=nil)
-      count ? @@config[:paginate] = count : @@config[:paginate]
-    end
+  def self.config
+    @@config
+  end
 
-    def root(path=nil)
-      path ? @@config[:root] = Pathname.new(path).expand_path : @@config[:root]
-    end
+  def self.paginate(count=nil)
+    count ? @@config[:paginate] = count : @@config[:paginate]
+  end
 
-    def meta(hash=nil)
-      hash ? @@config[:meta].update(hash) : @@config[:meta]
-    end
+  def self.root(path=nil)
+    path ? @@config[:root] = Pathname.new(path).expand_path : @@config[:root]
+  end
 
-    def format_proc(&blk)
-      if block_given? 
-        raise ArgumentError if blk.arity != 1
-        @@config[:format_proc] = blk 
-      else 
-        @@config[:format_proc] 
-      end
-    end
+  def self.meta(hash=nil)
+    hash ? @@config[:meta].update(hash) : @@config[:meta]
+  end
 
-    def comment_filter(&blk)
-      if block_given? 
-        raise ArgumentError if blk.arity != 1
-        @@config[:comment_filter] = blk 
-      else 
-        @@config[:comment_filter] 
-      end
-    end
-
-    def formatter(name=nil)
-      if name
-        @@config[:formatter] = name
-        @@config[:format_proc] = FORMAT_PROCS[name] || DEFAULTS[:format_proc]
-        begin
-          require name.to_s
-        rescue LoadError
-          $stderr.puts "Unable to load formatter #{name}. Aborting."
-          exit 1
-        end
-      else
-        @@config[:formatter]
-      end
+  def self.comment_filter(&blk)
+    if block_given?
+      raise ArgumentError if blk.arity != 1
+      @@config[:comment_filter] = blk
+    else
+      @@config[:comment_filter]
     end
   end
 

@@ -9,15 +9,6 @@ Honk.setup do
   # is installed.
   root '.'
 
-  # Defines the post formatter to use. Pass the name of the lib as a symbol, for
-  # example :redcloth for the RedCloth gem. If the formatter has a default
-  # associated format_proc, this will set it too.
-  formatter nil
-
-  # Describe how to format the contents of your post. Pass a proc that takes one
-  # string argument and returning a string.
-  format_proc { |s| s }
-
   # A filter for the comments, the default is to HTML-escape the input.
   comment_filter {|s| Rack::Utils.escape_html(s) }
 

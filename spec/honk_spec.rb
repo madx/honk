@@ -27,52 +27,6 @@ describe Honk do
     end
   end
 
-  describe '.formatter' do
-    it "should return the formatter name without arguments" do
-      Honk.formatter.should.be.nil
-    end
-
-    it "should change the default formatter with one argument" do
-      Honk.formatter :redcloth
-      Honk.formatter.should == :redcloth
-    end
-
-    it "should change the default format_proc with one argument" do
-      Honk.formatter :redcloth
-      Honk.format_proc.should == Honk::FORMAT_PROCS[:redcloth]
-    end
-
-    it "should reset the default format_proc when the formatter is unknown" do
-      begin
-        $stderr = StringIO.new
-        Honk.formatter :unknown_formatter
-        $stderr = STDERR
-      rescue SystemExit
-      end
-      Honk.format_proc.should == Honk::DEFAULTS[:format_proc]
-    end
-
-    it "should require the formatter with one argument" do
-      Honk.formatter :redcloth
-      require('redcloth').should.be.false
-    end
-  end
-
-  describe '.format_proc' do
-    it "should return the proc without arguments" do
-      Honk.format_proc.call("foo").should == "foo"
-    end
-
-    it "should change the proc with one argument" do
-      Honk.format_proc { |s| s.gsub('a', 'e') }
-      Honk.format_proc.call("mah").should == "meh"
-    end
-
-    it "should raise an error if the proc arity is wrong" do
-      lambda { Honk.format_proc {|a,b| a + b} }.should.raise ArgumentError
-    end
-  end
-
   describe '.comment_filter' do
     it "should return the proc without arguments" do
       Honk.comment_filter.call("foo").should == "foo"
