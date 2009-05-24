@@ -6,7 +6,7 @@ author = lambda {
 
 xml.instruct! :xml, :version => "1.0"
 xml.feed :xmlns => "http://www.w3.org/2005/Atom" do
-  xml.id blog_url 
+  xml.id blog_url
   xml.title Honk.meta[:title]
   xml.updated @posts.first.timestamp.httpdate
   xml.link :href => blog_url

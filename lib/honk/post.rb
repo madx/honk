@@ -1,7 +1,7 @@
 module Honk
 
   class Post
-    yaml_as "tag:honk.yapok.org,2009:Post"    
+    yaml_as "tag:honk.yapok.org,2009:Post"
     attr_accessor :title, :tags, :timestamp, :contents, :commentable, :slug,
                   :file, :comments
 
@@ -18,7 +18,7 @@ module Honk
         instance_variable_set "@#{k}", v
       end
     end
-    
+
     def comments
       if @comments.nil?
         begin
@@ -43,7 +43,7 @@ module Honk
             map.add(field[1..-1].to_sym, instance_variable_get(field))
           end
         end
-      end                  
+      end
     end
 
     def write(fileish)

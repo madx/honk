@@ -26,7 +26,7 @@ module Honk
         end
       end
     end
-  
+
     class << self
       def has?(name)
         @@list.member?(name)
@@ -41,7 +41,7 @@ module Honk
       end
 
       def fetch(range)
-        raise OutOfRangeError if range.first >= @@list.length 
+        raise OutOfRangeError if range.first >= @@list.length
         @@list[range].collect do |slug|
           Post.open slug, resolve(slug)
         end
