@@ -42,6 +42,13 @@ describe Honk::Index do
     end
   end
 
+  describe ".all" do
+    it "should return all the posts" do
+      Honk::Index.all.should.be.kind_of Array
+      Honk::Index.all.length.should == Honk::Index.list.length
+    end
+  end
+
   describe "pagination" do
     before do
       index = []

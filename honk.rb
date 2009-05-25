@@ -181,6 +181,11 @@ get '/tags' do
   haml :tags
 end
 
+get '/archive' do
+  @posts = Index.all
+  haml :archive
+end
+
 post '/post/:name' do
   if Index.has?(params[:name])
 
