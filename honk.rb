@@ -45,6 +45,11 @@ helpers do
     "http://" + File.join(Honk.meta[:domain], 'tag', t)
   end
 
+  def tag_item_count(items)
+    len = items.length
+    len == 1 ? "#{len} item" : "#{len} items"
+  end
+
   def post_url(p)
     "http://" + File.join(Honk.meta[:domain], 'post', p.slug)
   end
