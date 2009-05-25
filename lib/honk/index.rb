@@ -11,7 +11,11 @@ module Honk
       @@map = {}
       for entry in array
         @@list << (key = entry.keys.first)
-        entry[key] = key + ".yml" if entry[key].nil?
+        if !entry[key]
+          entry[key] = "#{key}.yml"
+        elsif entry[key].index '~'
+          entry[key].gsub! '~', key
+        end
         @@map.update(entry)
       end
       raise IndexError if @@list.length != @@map.keys.length

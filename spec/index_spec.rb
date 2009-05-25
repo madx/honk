@@ -10,6 +10,10 @@ describe Honk::Index do
       Honk::Index.resolve("a_post").should == "a_post.yml"
     end
 
+    it "should expand tildes" do
+      Honk::Index.resolve("a_last_one").should == "01_a_last_one.yml"
+    end
+
     it "should raise an error if the file format is wrong" do
       lambda {
         YAML.load("--- !honk.yapok.org,2009/Index\n- foo")
