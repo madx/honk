@@ -248,7 +248,7 @@ get '/rss.xml' do
   builder :rss
 end
 
-get '/_reload' do
+get '/_sync' do
   begin
     YAML.load_file(Honk.root / 'index.yml')
     begin
