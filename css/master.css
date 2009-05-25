@@ -39,6 +39,7 @@ a:hover, a:active, a:focus {
   margin: 0;
   padding: 0.25em 0.5em;
   background-color: #333;
+  color: #efefef;
 }
 #contents h2 a {
   color: #efefef;
