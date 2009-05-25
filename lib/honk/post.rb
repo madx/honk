@@ -50,13 +50,12 @@ module Honk
       fileish << YAML.dump(self)
     end
 
-    class << self
-      def open(slug, file)
-        post = YAML.load_file(Honk.root / 'posts' / file)
-        raise FileFormatError unless post.is_a?(Post)
-        post.instance_variable_set "@slug", slug
-        post.instance_variable_set "@file", file
-        post
+    def self.open(slug, file)
+      post = YAML.load_file(Honk.root / 'posts' / file)
+      raise FileFormatError unless post.is_a?(Post)
+      post.tap do |p|
+        p.slug = slug
+        p.file = file
       end
     end
 

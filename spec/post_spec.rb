@@ -50,7 +50,7 @@ describe Honk::Post do
       )
     end
 
-    it "should write de dump to a file" do
+    it "should write the dump to a file" do
       out = ""
       @p.write(out)
       out.should == YAML.dump(@p)
