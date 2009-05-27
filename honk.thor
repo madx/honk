@@ -23,6 +23,10 @@ class Script < Thor
       f.puts "--- !honk.yapok.org,2009/Tags"
     end
     puts "Finished."
+    puts <<EOT
+Put your posts in #{Honk.root/'posts'}.
+Edit the index.yml and tags.yml files accordingly.
+EOT
   end
 
 end
