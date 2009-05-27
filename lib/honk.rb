@@ -4,6 +4,8 @@ require 'date'
 
 class Pathname; alias / join; end
 
+Infinity = 1/0.0
+
 module Honk
 
   class NoPostError     < StandardError; end
@@ -25,43 +27,45 @@ module Honk
 
   @@config = DEFAULTS.dup
 
-  def self.setup(&blk)
-    instance_eval &blk
-  end
-
-  def self.config
-    @@config
-  end
-
-  def self.paginate(count=nil)
-    count ? @@config[:paginate] = count : @@config[:paginate]
-  end
-
-  def self.root(path=nil)
-    if path
-      pn = Pathname.new(path).expand_path
-      if pn.exist?
-        @@config[:root] = pn
-      else
-        raise "No such directory #{pn}"
-      end
-    else
-      @@config[:root]
+  class << self
+    def setup(&blk)
+      instance_eval &blk
     end
-  end
 
-  def self.meta(hash=nil)
-    hash ? @@config[:meta].update(hash) : @@config[:meta]
-  end
+    def config
+      @@config
+    end
 
-  def self.comment_filter(&blk)
-    if block_given?
-      if blk.arity != 1
-        raise "The comment_filter block should take one argument"
+    def paginate(count=nil)
+      count ? @@config[:paginate] = count : @@config[:paginate]
+    end
+
+    def root(path=nil)
+      if path
+        pn = Pathname.new(path).expand_path
+        if pn.exist?
+          @@config[:root] = pn
+        else
+          raise "No such directory #{pn}"
+        end
+      else
+        @@config[:root]
       end
-      @@config[:comment_filter] = blk
-    else
-      @@config[:comment_filter]
+    end
+
+    def meta(hash=nil)
+      hash ? @@config[:meta].update(hash) : @@config[:meta]
+    end
+
+    def comment_filter(&blk)
+      if block_given?
+        if blk.arity != 1
+          raise "The comment_filter block should take one argument"
+        end
+        @@config[:comment_filter] = blk
+      else
+        @@config[:comment_filter]
+      end
     end
   end
 
@@ -219,6 +223,7 @@ module Honk
       end
 
       def page(num)
+        return all if Honk.paginate == Infinity
         start = num * Honk.paginate
         fetch start...(start + Honk.paginate)
       end

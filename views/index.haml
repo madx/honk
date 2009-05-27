@@ -1,14 +1,15 @@
 - for post in @posts
   = partial :post, :locals => {:@post => post, :@short => true}
-%p.pagination
-  - if @page > 0
-    %a{:title => "Previous page", :href => "/?page=#{@page-1}"} «
-  - for page in 0..Index.pages
-    - if page == @page
-      %strong= page
-    - else
-      %a{:title => "Go to page #{page}", :href => "/?page=#{page}"}= page
-  - if @page < Index.pages
-    %a{:title => "Next page", :href => "/?page=#{@page+1}"} »
+- if Honk.paginate != Infinity
+  %p.pagination
+    - if @page > 0
+      %a{:title => "Previous page", :href => "/?page=#{@page-1}"} «
+    - for page in 0..Index.pages
+      - if page == @page
+        %strong= page
+      - else
+        %a{:title => "Go to page #{page}", :href => "/?page=#{page}"}= page
+    - if @page < Index.pages
+      %a{:title => "Next page", :href => "/?page=#{@page+1}"} »
 
 - @title = ''
