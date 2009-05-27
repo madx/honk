@@ -1,0 +1,33 @@
+Honk 0.2
+========
+
+  IMPORTANT NOTICE:
+  There's no more formatter, use raw HTML, or your own tool to generate
+  your blog posts. This should really speed up things!
+
+  New features:
+
+  * A small thor task to bootstrap a new blog (still need improvements though)
+  * Add tilde expansion to the index
+  * A nicer default stylesheet
+  * Split layout files for easier customization
+  * "Remember me" checkbox for the comments
+  * Pagination and navigation (tags/rss/atom/archives)
+    Pagination can be disabled by setting it to Infinity
+  * Better error handling in production
+  * Add an Expires header to the served stylesheets
+
+  Bug fixes:
+
+  * Fixed crash on comment submit in production environment
+  * Fixed the HTML id collision in the comment form
+  * Fixed date parsing bug
+  * Fixed a problem with the optional website field
+  * Fixed post contents weirdnesses in the feeds
+  * /_reload is now /_sync, and works :P
+  * maybe (=obviously) more...
+
+Honk is now licensed under the terms of the MIT license, please see the
+LICENSE file for details.
+
+Honk is now tested with Bacon [http://github.com/chneukirchen/bacon]
