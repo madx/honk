@@ -234,7 +234,7 @@ post '/post/:name' do
 
       begin
         comment_file = Index.resolve(params[:name]).
-          gsub!(/\.yml$/, '.comments.yml')
+          gsub(/\.yml$/, '.comments.yml')
       rescue
         raise IndexError, params[:name]
       end
