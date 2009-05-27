@@ -65,8 +65,217 @@ module Honk
     end
   end
 
-end
 
-%w[comment index post tag].each do |file|
-  require Pathname.new(__FILE__).dirname / 'honk' / file
-end
+  class Post
+    yaml_as "tag:honk.yapok.org,2009:Post"
+    attr_accessor :title, :tags, :timestamp, :contents, :commentable, :slug,
+                  :file, :comments
+
+    def yaml_initialize(tag, values)
+      raise FileFormatError, "not a valid Post" unless values.is_a? Hash
+      values.each do |k,v|
+        instance_variable_set "@#{k}", v
+      end
+      @timestamp = Time.parse(@timestamp) unless @timestamp.is_a?(Time)
+    end
+
+    def initialize(params={})
+      params.each do |k,v|
+        instance_variable_set "@#{k}", v
+      end
+    end
+
+    def comments
+      if @comments.nil?
+        begin
+          comment_file = Honk.root / 'posts' / @file.gsub(/\.yml$/, '.comments.yml')
+          if File.exist? comment_file
+            @comments = YAML.load_stream(File.read(comment_file)).documents
+          else [] end
+        rescue NoMethodError, FileFormatError
+          []
+        end
+      else @comments end
+    end
+
+    def to_yaml_properties
+      %w[@title @tags @timestamp @commentable @contents]
+    end
+
+    def to_yaml(opts)
+      YAML.quick_emit(object_id, opts) do |out|
+        out.map(taguri, to_yaml_style) do |map|
+          to_yaml_properties.each do |field|
+            map.add(field[1..-1].to_sym, instance_variable_get(field))
+          end
+        end
+      end
+    end
+
+    def write(fileish)
+      fileish << YAML.dump(self)
+    end
+
+    def self.open(slug, file)
+      post = YAML.load_file(Honk.root / 'posts' / file)
+      raise FileFormatError unless post.is_a?(Post)
+      post.tap do |p|
+        p.slug = slug
+        p.file = file
+      end
+    end
+
+  end # Post
+
+
+  class Comment
+    yaml_as "tag:honk.yapok.org,2009:Comment"
+
+    attr_reader :author, :email, :website, :timestamp, :contents, :post
+
+    def yaml_initialize(tag, values)
+      raise FileFormatError, "not a valid comment" unless values.is_a? Hash
+      initialize(values)
+    end
+
+    def initialize(params={})
+      params.each do |k,v|
+        instance_variable_set "@#{k}", v
+      end
+    end
+
+    def to_yaml_properties
+      %w[@author @email @website @timestamp @contents]
+    end
+
+    def to_yaml(opts)
+      YAML.quick_emit(object_id, opts) do |out|
+        out.map(taguri, to_yaml_style) do |map|
+          to_yaml_properties.each do |field|
+            map.add(field[1..-1].to_sym, instance_variable_get(field))
+          end
+        end
+      end
+    end
+
+    def write(fileish)
+      fileish << YAML.dump(self)
+    end
+
+  end # Comment
+
+
+  class Index
+    yaml_as "tag:honk.yapok.org,2009:Index"
+
+    def yaml_initialize(tag, array)
+      @@tag = tag
+      unless array.is_a?(Array) && array.inject(true) {|b,e| e.is_a?(Hash) }
+        raise FileFormatError, "not a valid index"
+      end
+      @@list = []
+      @@map = {}
+      for entry in array
+        @@list << (key = entry.keys.first)
+        if !entry[key]
+          entry[key] = "#{key}.yml"
+        elsif entry[key].index '~'
+          entry[key].gsub! '~', key
+        end
+        @@map.update(entry)
+      end
+      raise IndexError if @@list.length != @@map.keys.length
+    end
+
+
+    class << self
+      def dump
+        YAML.quick_emit(object_id, {}) do |out|
+          out.seq(@@tag, to_yaml_style) do |seq|
+            @@list.each do |k|
+              seq.add({k, @@map[k]})
+            end
+          end
+        end
+      end
+
+      def has?(name)
+        @@list.member?(name)
+      end
+
+      def list
+        @@list
+      end
+
+      def map
+        @@map
+      end
+
+      def fetch(range)
+        raise OutOfRangeError if range.first >= @@list.length
+        @@list[range].collect do |slug|
+          Post.open slug, resolve(slug)
+        end
+      end
+
+      def page(num)
+        start = num * Honk.paginate
+        fetch start...(start + Honk.paginate)
+      end
+
+      def all
+        fetch 0...(@@list.length)
+      end
+
+      def pages(slug=nil)
+        (@@list.index(slug) || @@list.length) / Honk.paginate
+      end
+
+      def resolve(slug)
+        @@map[slug]
+      end
+
+      def push(map)
+        key = map.keys.first
+        unless @@list.member?(key)
+          @@map.update(map)
+          @@list.unshift(key)
+        end
+      end
+    end # class methods
+
+  end # Index
+
+
+  class Tag
+    yaml_as "tag:honk.yapok.org,2009:Tags"
+
+    def yaml_initialize(tag, mapping)
+      unless mapping.is_a?(Hash) &&
+             mapping.keys.inject(true) {|b,k| mapping[k].is_a?(Array)}
+        raise FileFormatError
+      end
+      @@mapping = mapping
+    end
+
+    class << self
+      def get(name)
+        @@mapping[name] || []
+      end
+
+      def exists?(tag)
+        @@mapping.key?(tag)
+      end
+
+      def tags
+        @@mapping.keys.sort
+      end
+
+      def sorted_list
+        @@mapping.sort {|a,b| a[1].length <=> b[1].length }.reverse
+      end
+    end
+
+  end # Tag
+
+end # Honk
