@@ -1,0 +1,5 @@
+%ul
+  - for post in @posts
+    %li== #{post_link(post)} (#{post.timestamp})
+
+- @title = ''
