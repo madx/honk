@@ -12,8 +12,7 @@ h2. Features
 h2. Requirements, install & setup
 
 You'll need "Sinatra":http://github.com/sinatra/sinatra and, optionnaly,
-"Thor":http://github.com/wycats/thor and a formatter such as RedCloth, 
-Maruku,...
+"Thor":http://github.com/wycats/thor.
 
 Thor is used for convenience scripts (regenerating the taglist, managing your
 posts) so I strongly recommend that you install it. The formatter may be used to
@@ -21,8 +20,10 @@ ease the editing of your posts. Honk will treat the contents as raw HTML if you
 don't specify a formatter (see below).
 
 Once you've got this, clone this repository or grab a tarball and extract it
-where you want to install your blog. Run @ruby honk.rb@ or @thor honk:start@ to
-start your blog.
+where you want to install your blog. Run @ruby honk.rb@ to start your blog.
+
+You can run @thor script:bootstrap@ to build the default files and start 
+editing them right away!
 
 h2. Usage 
 
@@ -33,13 +34,14 @@ h3. Index
 
 The @index.yml@ files contains a sequence of mappings in which each key is a
 short name for your post, and the value is the path for your post (relative to
-Honk's root) or @nil@ to automatically build the path.
+Honk's root) or @~@ to automatically build the path.
 
 <pre><code>--- !honk.yapok.org,2009/Index
 - my_first_post: my_first_post.yml
 - another_one: another_one.yml
 - alias: this_post_is_aliased.yml
 - magic: ~ # will map to magic.yml
+- more_magic: foo_~.yml # will map to foo_more_magic.yml
 </code></pre>
 
 The way Honk works allows you to write posts without publishing them. They will
@@ -109,11 +111,6 @@ h3. Configuration options
 * @root@: tells honk where to find the posts, index and tags files, default is
   the same dir as you blog, but you can change this to put your content
   elsewhere.
-* @formatter@: the name of the gem to require to enable formatting.
-  Using a formatter automatically sets a default @format_proc@ but you can still
-  change that later.
-* @format_proc@: a proc that returns your formatted post. The argument is 
-  the contents of the post being formatted.
 * @comment_filter@: a proc that returns the filtered text for a comment. This is
   useful for escaping HTML, allowing formatting, etc.
 * @meta@: defines metadata for your blog such as author's name, email, a
