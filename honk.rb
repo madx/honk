@@ -205,6 +205,7 @@ post '/post/:name' do
       haml :post
 
     else
+      post = Post.open params[:name], Index.resolve(params[:name])
       args = {
         :author    => params[:c_author],
         :email     => params[:c_email],
@@ -243,7 +244,7 @@ post '/post/:name' do
       comment = Comment.new args
       File.open(comment_file, 'a') {|f| comment.write(f) }
 
-      Honk.post_comment_hook.call(@post, comment)
+      Honk.post_comment_hook.call(post, comment)
 
       redirect request.env['REQUEST_URI']
     end
