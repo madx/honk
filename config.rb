@@ -12,6 +12,10 @@ Honk.setup do
   # A filter for the comments, the default is to HTML-escape the input.
   comment_filter {|s| Rack::Utils.escape_html(s) }
 
+  # A hook that is called after successfuly posting a comment
+  post_comment_hook { |post, comment|
+  }
+
   # Defines metadata for your blog, pass a hash with arbitrary keys.
   # If you customize your views, you can always use Honk.meta[key] to get a
   # metadata.

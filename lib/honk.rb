@@ -17,6 +17,7 @@ module Honk
     :paginate       => 10,
     :root           => Pathname.new('.').expand_path,
     :comment_filter => lambda {|s| s },
+    :post_comment_hook => lambda {|p,c| },
     :meta        => {
       :author => "Honk default author",
       :title  => "Honk",
@@ -65,6 +66,17 @@ module Honk
         @@config[:comment_filter] = blk
       else
         @@config[:comment_filter]
+      end
+    end
+
+    def post_comment_hook(&blk)
+      if block_given?
+        if blk.arity != 2
+          raise "The post_comment_hook block should take two arguments"
+        end
+        @@config[:post_comment_hook] = blk
+      else
+        @@config[:post_comment_hook]
       end
     end
   end

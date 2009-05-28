@@ -46,6 +46,21 @@ describe Honk do
     end
   end
 
+  describe '.post_comment_hook' do
+    it "should return the proc without arguments" do
+      Honk.post_comment_hook.should.be.kind_of Proc
+    end
+
+    it "should change the proc with one argument" do
+      Honk.post_comment_hook { |p,c| "foo" }
+      Honk.post_comment_hook.call(nil,nil).should == "foo"
+    end
+
+    it "should raise an error if the proc arity is wrong" do
+      lambda { Honk.post_comment_hook {|a| } }.should.raise
+    end
+  end
+
   describe '.meta' do
     it "should return the meta hash without arguments" do
       Honk.meta.should.be.kind_of(Hash)

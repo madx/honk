@@ -243,6 +243,8 @@ post '/post/:name' do
       comment = Comment.new args
       File.open(comment_file, 'a') {|f| comment.write(f) }
 
+      Honk.post_comment_hook.call(@post, comment)
+
       redirect request.env['REQUEST_URI']
     end
   else raise NoSuchPost, params[:name] end
