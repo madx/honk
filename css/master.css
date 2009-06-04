@@ -97,6 +97,11 @@ a:hover, a:active, a:focus {
   top: 0;
   left: 72%;
 }
+#contents .post-add-comment p.trap {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+}
 #contents .pagination {
   text-align: center;
   font-size: 1.2em;

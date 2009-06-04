@@ -85,7 +85,7 @@ helpers do
   end
 
   def author_mailto_link
-    email = Honk.meta[:email].gsub('@', 'REMOVETHIS@').gsub('.', 'DOT')
+    email = Honk.meta[:email].gsub('@', '[REMOVETHIS]@')
     args = {
       :href => "mailto:#{email}", :title => "Send a mail to the author"
     }
@@ -188,6 +188,9 @@ end
 
 post '/post/:name' do
   if Index.has?(params[:name])
+    unless params[:c_nickname].strip.empty?
+      redirect '/'
+    end
 
     @errors = []
     @errors << :c_author   if params[:c_author].strip.empty?
