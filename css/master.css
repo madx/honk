@@ -76,7 +76,10 @@ a:hover, a:active, a:focus {
 #contents .post-add-comment p label {
   display: block;
   width: 20%;
+}
+#contents .post-add-comment p label[for=c_remember] {
   float: left;
+  display: inline;
 }
 #contents .post-add-comment p input[type=text], #contents .post-add-comment p textarea {
   width: 50%;
@@ -85,17 +88,21 @@ a:hover, a:active, a:focus {
   color: #333;
 }
 #contents .post-add-comment p input[type=text].error, #contents .post-add-comment p textarea.error {
-  border-color: red;
+  border-color: #f25;
+  background-color: #fee;
 }
 #contents .post-add-comment p textarea {
-  width: 75%;
+  width: 100%;
 }
 #contents .post-add-comment p span.error {
-  color: red;
+  color: #f25;
   display: block;
   position: absolute;
   top: 0;
-  left: 72%;
+  right: 50%;
+}
+#contents .post-add-comment p#text-field span.error {
+  right: 0;
 }
 #contents .post-add-comment p.trap {
   position: absolute;

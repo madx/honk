@@ -41,7 +41,7 @@
         %p= input_field "c_email", "E-mail"
         %p{:class => "trap"}= input_field "c_nickname", "Nickname"
         %p= input_field "c_website", "Website"
-        %p= text_field  "c_contents", "Your comment"
+        %p#text-field= text_field  "c_contents", "Your comment"
         %p
           %label{:for => "c_remember"} Remember me?
           = remember_check_box
