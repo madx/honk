@@ -1,4 +1,4 @@
-%w[rubygems sinatra pathname].each do |lib|
+%w[rubygems sinatra pathname haml].each do |lib|
   require lib
 end
 require File.join(File.dirname(__FILE__), 'lib', 'honk')
