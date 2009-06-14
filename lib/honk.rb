@@ -19,15 +19,17 @@ module Honk
     :comment_filter => lambda {|s| s },
     :post_comment_hook => lambda {|p,c| },
     :meta        => {
-      :author => "Honk default author",
-      :title  => "Honk",
-      :domain => "honk.github.com",
-      :email  => "honk@nowhere.com"
+      :author      => "Honk default author",
+      :title       => "Honk",
+      :domain      => "honk.github.com",
+      :email       => "honk@nowhere.com",
+      :description => "This is a blog"
     }
   }
 
   @@config = DEFAULTS.dup
 
+  # {{{ Module methods
   class << self
     def setup(&blk)
       instance_eval &blk
@@ -79,9 +81,10 @@ module Honk
         @@config[:post_comment_hook]
       end
     end
-  end
+  end # }}}
 
-
+  # The Post class represents a single Post.
+  # {{{
   class Post
     yaml_as "tag:honk.yapok.org,2009:Post"
     attr_accessor :title, :tags, :timestamp, :contents, :commentable, :slug,
@@ -141,9 +144,9 @@ module Honk
       end
     end
 
-  end # Post
+  end # }}}
 
-
+  # {{{
   class Comment
     yaml_as "tag:honk.yapok.org,2009:Comment"
 
@@ -178,9 +181,9 @@ module Honk
       fileish << YAML.dump(self)
     end
 
-  end # Comment
+  end # }}}
 
-
+  # {{{
   class Index
     yaml_as "tag:honk.yapok.org,2009:Index"
 
@@ -260,10 +263,9 @@ module Honk
         end
       end
     end # class methods
+  end # }}}
 
-  end # Index
-
-
+    # {{{
   class Tag
     yaml_as "tag:honk.yapok.org,2009:Tags"
 
@@ -293,6 +295,6 @@ module Honk
       end
     end
 
-  end # Tag
+  end # }}}
 
 end # Honk
