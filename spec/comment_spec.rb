@@ -1,5 +1,3 @@
-require File.join(File.dirname(__FILE__), 'helper')
-
 describe Honk::Comment do
 
   describe "#initialize" do

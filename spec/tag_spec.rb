@@ -1,5 +1,3 @@
-require File.join(File.dirname(__FILE__), 'helper')
-
 describe Honk::Tag do
   before do
     YAML.load_file(Honk.root / 'tags.yml')

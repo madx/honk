@@ -1,3 +1,16 @@
+Honk 0.3
+========
+
+  New features:
+  * A reverse CAPTCHA to prevent spam
+  * Description metadata
+  * Various theme enhancements
+  * Add a post-comment hook to execute arbitrary code upon comment posting 
+
+  Bug fixes:
+  * Various refactorings
+  * Sinatra 0.9.3 compatibility 
+
 Honk 0.2
 ========
 

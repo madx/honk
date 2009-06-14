@@ -1,5 +1,3 @@
-require File.join(File.dirname(__FILE__), 'helper')
-
 describe Honk::Index do
   before do
     YAML.load_file(Honk.root / 'index.yml')

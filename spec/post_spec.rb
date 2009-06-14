@@ -1,5 +1,3 @@
-require File.join(File.dirname(__FILE__), 'helper')
-
 describe Honk::Post do
   describe ".open" do
     it "should return a post" do
@@ -36,8 +34,8 @@ describe Honk::Post do
 
   describe "#initialize" do
     it "should set the instance variables" do
-      p = Honk::Post.new :foo => :bar
-      p.instance_variables.should == ["@foo"]
+      p = Honk::Post.new
+      p.instance_variables.sort.should == %w[@title @timestamp @contents @commentable @tags].sort
     end
   end
 
@@ -45,7 +43,7 @@ describe Honk::Post do
     before do
       @p = Honk::Post.new(
         :title => "foo", :tags => ['a', 'b'],
-        :timestap => Time.now, :commentable => true,
+        :timestamp => Time.now, :commentable => true,
         :contents => "<p>This is a post</p>"
       )
     end
@@ -56,7 +54,7 @@ describe Honk::Post do
       out.should == YAML.dump(@p)
     end
 
-    it "should append it if there already are posts" do
+    it "should append it if there's already a post" do
       out = ""
       @p.write(out)
       @p.write(out)

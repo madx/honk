@@ -99,8 +99,9 @@ module Honk
     end
 
     def initialize(params={})
-      params.each do |k,v|
-        instance_variable_set "@#{k}", v
+      [:title, :timestamp, :contents, :commentable, :tags].each do |param|
+        params[param] ||= nil
+        instance_variable_set "@#{param}", params[param]
       end
     end
 
