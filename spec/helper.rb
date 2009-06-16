@@ -12,13 +12,13 @@ module Bacon
     def handle_requirement(description)
       error = yield
       if error.empty?
-        puts "\e[32m- #{description}\e[0m"
+        puts "\e[32m+ #{description}\e[0m"
       else
         p error
         if error == "FAILED"
           puts "\e[31m- #{description}\e[0m"
         else
-          puts "\e[35m- #{description}\e[0m"
+          puts "\e[35mE #{description}\e[0m"
         end
       end
     end
@@ -32,9 +32,9 @@ module Bacon
 end
 
 def reset_honk
+  Honk.setup &Honk::DEFAULTS
   Honk.setup {
     root File.join(File.dirname(__FILE__), 'mock')
-    paginate 10
   }
 end
 

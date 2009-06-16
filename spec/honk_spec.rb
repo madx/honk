@@ -1,46 +1,130 @@
-describe Honk do
-
-  after do
+describe '== Honk' do
+  before do
     reset_honk
+    @defaults = Metash.new
+    @defaults.instance_eval &Honk::DEFAULTS
   end
 
-  describe 'configuration accessors/setters' do
-    it "has root()" do
-      Honk.root.should == Honk.config[:root]
-      Honk.root '..'
-      Honk.root.should == Pathname.new('..').expand_path
-      lambda { Honk.root "/foo/bar/baz" }.should.raise
+  describe 'Options' do
+    should 'be accessible with the .options method' do
+      Honk.options.should.be.kind_of Metash
     end
 
-    it "has paginate()" do
-      Honk.paginate.should == Honk::DEFAULTS[:paginate]
-      Honk.paginate 20
-      Honk.paginate.should == 20
-    end
-
-    it "has comment_filter()" do
-      Honk.comment_filter.call("foo").should == "foo"
-      Honk.comment_filter { |s| s.gsub('a', 'e') }
-      Honk.comment_filter.call("mah").should == "meh"
-      lambda { Honk.comment_filter {|a,b| a + b} }.should.raise
-    end
-
-    it "has post_comment_hook()" do
-      Honk.post_comment_hook.should.be.kind_of Proc
-      Honk.post_comment_hook { |p,c| "foo" }
-      Honk.post_comment_hook.call(nil,nil).should == "foo"
-      lambda { Honk.post_comment_hook {|a| } }.should.raise
-    end
-
-    it "has meta()" do
-      Honk.meta.should.be.kind_of(Hash)
-      Honk.meta[:author].should == "Honk default author"
-      Honk.meta[:title].should  == "Honk"
-      Honk.meta[:domain].should == "honk.github.com"
-      Honk.meta[:email].should  == "honk@nowhere.com"
-      Honk.meta({ :author => 'bar' })
-      Honk.meta[:author].should == 'bar'
+    should 'have default values' do
+      Honk.options.should == @defaults
     end
   end
 
+  describe 'Setup' do
+    it 'should change the options' do
+      Honk.setup { paginate 20 }
+      Honk.options.paginate.should == 20
+    end
+
+    it 'should not remove previously set options' do
+      Honk.setup { paginate 20 }
+      Honk.options.meta.should == @defaults.meta
+    end
+  end
+
+  describe 'Configuration check' do
+    it 'fails if there are unset mandatory options' do
+      Honk::DEFAULT_OPTIONS.each do |opt|
+        Honk.options.__send__(opt, nil)
+      end
+      Honk.check_options.tap do |check|
+        check[:valid].should.be.false
+        check[:messages].each do |k,v|
+          v.should == "#{k} is missing"
+        end
+      end
+    end
+
+    should 'not fail with the default options' do
+      Honk.check_options[:valid].should.be.true
+    end
+
+    it 'checks that paginate is a Numeric' do
+      [10, 10.0, Infinity].each do |value|
+        Honk.options.paginate value
+        Honk.check_options[:valid].should.be.true
+      end
+
+      Honk.options.paginate :foo
+      Honk.check_options.tap do |check|
+        check[:valid].should.be.false
+        check[:messages][:paginate].should == 'wrong value for paginate'
+      end
+    end
+
+    it 'checks that root is a folder' do
+      Honk.options.root '/etc/passwd'
+      Honk.check_options.tap do |check|
+        check[:valid].should.be.false
+        check[:messages][:root].should == '/etc/passwd is not a folder'
+      end
+    end
+
+    it 'checks that the root folder is writable' do
+      Honk.options.root '/proc'
+      Honk.check_options.tap do |check|
+        check[:valid].should.be.false
+        check[:messages][:root].should == '/proc is not writable'
+      end
+    end
+
+    it 'checks that the comment_filter is a proc' do
+      Honk.options.comment_filter :foo
+      Honk.check_options.tap do |check|
+        check[:valid].should.be.false
+        check[:messages][:comment_filter].
+          should == 'comment_filter must be a proc'
+      end
+    end
+
+    it 'checks that the comment_filter has the right arity' do
+      Honk.options.comment_filter lambda {}
+      Honk.check_options.tap do |check|
+        check[:valid].should.be.false
+        check[:messages][:comment_filter].
+          should == 'comment_filter takes one argument'
+      end
+    end
+
+    it 'checks that the comment_hook is a proc' do
+      Honk.options.comment_hook :foo
+      Honk.check_options.tap do |check|
+        check[:valid].should.be.false
+        check[:messages][:comment_hook].
+          should == 'comment_hook must be a proc'
+      end
+    end
+
+    it 'checks that the comment_hook has the right arity' do
+      Honk.options.comment_hook lambda {}
+      Honk.check_options.tap do |check|
+        check[:valid].should.be.false
+        check[:messages][:comment_hook].
+          should == 'comment_hook takes two arguments'
+      end
+    end
+
+    it 'checks that the metadata is a hash' do
+      Honk.options.meta :foo
+      Honk.check_options.tap do |check|
+        check[:valid].should.be.false
+        check[:messages][:meta].
+          should == 'meta must be an hash'
+      end
+    end
+
+    it 'checks that required metada is there' do
+      Honk.options.meta _= {}
+      Honk.check_options.tap do |check|
+        check[:valid].should.be.false
+        check[:messages][:meta].
+          should == 'missing metadata: author, title, domain, email and description'
+      end
+    end
+  end
 end
