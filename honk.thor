@@ -6,12 +6,19 @@ this = File.dirname(__FILE__)
 require File.join(this, 'lib', 'honk')
 require File.join(this, 'config')
 
-class Script < Thor
+class Blog < Thor
 
   desc "bootstrap", "create the default files"
   method_options :root => :optional
   def bootstrap
+    if options[:root]
+      Honk.root options[:root]
+    end
     puts "Creating directories..."
+    if File.exist?(Honk.root) && Dir.entries(Honk.root) != %w[. ..]
+      puts "root directory is not empty, aborting."
+      exit 1
+    end
     FileUtils.mkdir_p Honk.root unless File.exist? Honk.root
     FileUtils.mkdir   Honk.root/'posts' unless File.exist? Honk.root/'posts'
 
