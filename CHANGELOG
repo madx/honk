@@ -1,14 +1,24 @@
 Honk 0.3
 ========
 
+  IMPORTANT NOTICE:
+  Honk 0.3 is NOT RETRO COMPATIBLE!
+  Many things have changed and/or were rewritten. Please make sure that you
+  update your config.rb with new parameters.
+  Many things have been improved, look at the feature list below
+  Re-read the README if needed
+
   New features:
+  * New configuration system
+  * Default values for Posts (timestamp, commentability, tags)
   * A reverse CAPTCHA to prevent spam
   * Description metadata
   * Various theme enhancements
-  * Add a post-comment hook to execute arbitrary code upon comment posting 
+  * Add a post-comment hook to execute arbitrary code upon comment posting
+    (this is the comment_hook option)
 
   Bug fixes:
-  * Various refactorings
+  * Huge refactoring
   * Sinatra 0.9.3 compatibility 
 
 Honk 0.2
