@@ -59,12 +59,16 @@ module Honk
         messages[:paginate] = 'wrong value for paginate'
       end
 
-      if File.directory?(@@options.root)
-        unless File.writable?(@@options.root)
-          messages[:root] = "#{@@options.root} is not writable"
+      if @@options.root.is_a?(Pathname)
+        if @@options.root.directory?
+          unless @@options.root.writable?
+            messages[:root] = "#{@@options.root} is not writable"
+          end
+        else
+          messages[:root] = "#{@@options.root} is not a folder"
         end
       else
-        messages[:root] = "#{@@options.root} is not a folder"
+        messages[:root] = "#{@@options.root.inspect} is not a Pathname"
       end
 
       if @@options.comment_filter.is_a?(Proc)

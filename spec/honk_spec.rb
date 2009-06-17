@@ -1,4 +1,4 @@
-describe '== Honk' do
+describe 'Honk' do
   before do
     reset_honk
     @defaults = Metash.new
@@ -57,8 +57,16 @@ describe '== Honk' do
       end
     end
 
-    it 'checks that root is a folder' do
+    it 'checks that root is a pathname' do
       Honk.options.root '/etc/passwd'
+      Honk.check_options.tap do |check|
+        check[:valid].should.be.false
+        check[:messages][:root].should == '"/etc/passwd" is not a Pathname'
+      end
+    end
+
+    it 'checks that root is a folder' do
+      Honk.options.root Pathname.new('/etc/passwd')
       Honk.check_options.tap do |check|
         check[:valid].should.be.false
         check[:messages][:root].should == '/etc/passwd is not a folder'
@@ -66,7 +74,7 @@ describe '== Honk' do
     end
 
     it 'checks that the root folder is writable' do
-      Honk.options.root '/proc'
+      Honk.options.root Pathname.new('/proc')
       Honk.check_options.tap do |check|
         check[:valid].should.be.false
         check[:messages][:root].should == '/proc is not writable'
