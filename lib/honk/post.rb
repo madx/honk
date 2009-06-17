@@ -1,22 +1,17 @@
 module Honk
   class Post
     yaml_as "tag:honk.yapok.org,2009:Post"
-    attr_accessor :title, :tags, :timestamp, :contents, :commentable, :slug,
-                  :file, :comments
 
-    def yaml_initialize(tag, values)
-      raise FileFormatError, "not a valid Post" unless values.is_a? Hash
-      values.each do |k,v|
-        instance_variable_set "@#{k}", v
-      end
-      @timestamp = Time.parse(@timestamp) unless @timestamp.is_a?(Time)
+    attr_accessor :title, :timestamp, :contents, :commentable, :tags,
+                  :slug,  :file
+
+    def yaml_initialize(tag, params)
+      initialize_attributes params
     end
 
     def initialize(params={})
-      [:title, :timestamp, :contents, :commentable, :tags].each do |param|
-        params[param] ||= nil
-        instance_variable_set "@#{param}", params[param]
-      end
+      params[:timestamp] ||= Time.now
+      initialize_attributes params
     end
 
     def comments
@@ -51,11 +46,26 @@ module Honk
     end
 
     def self.open(slug, file)
-      post = YAML.load_file(Honk.root / 'posts' / file)
-      raise FileFormatError unless post.is_a?(Post)
+      path = Honk.options.root / 'posts' / "#{file}.yml"
+      post = YAML.load_file(path)
       post.tap do |p|
         p.slug = slug
         p.file = file
+        p.timestamp ||= path.mtime
+      end
+    end
+
+    private
+
+    def initialize_attributes(params={})
+      raise ArgumentError, 'title is missing'     unless params[:title]
+      raise ArgumentError, 'contents are missing' unless params[:contents]
+
+      params[:commentable] ||= true
+      params[:tags]        ||= []
+
+      params.each do |key, value|
+        instance_variable_set "@#{key}", value
       end
     end
 

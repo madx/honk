@@ -34,8 +34,12 @@ end
 def reset_honk
   Honk.setup &Honk::DEFAULTS
   Honk.setup {
-    root File.join(File.dirname(__FILE__), 'mock')
+    root Pathname.new(__FILE__).dirname / 'mock'
   }
+end
+
+def mock(file)
+  Honk.options.root / file
 end
 
 reset_honk
