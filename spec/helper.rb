@@ -14,7 +14,6 @@ module Bacon
       if error.empty?
         puts "\e[32m+ #{description}\e[0m"
       else
-        p error
         if error == "FAILED"
           puts "\e[31m- #{description}\e[0m"
         else
