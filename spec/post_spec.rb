@@ -72,10 +72,25 @@ describe Honk::Post do
     end
   end
 
-  describe '#comments' do
+  describe '#to_yaml' do
+    before do
+      @post  = Honk::Post.open('sample', 'basic_sample')
+      @short = Honk::Post.open('sample', 'short_sample')
+    end
+
+    it 'should dump with the right tag' do
+      dump = YAML.dump(@post)
+      dump.should.include '--- !honk.yapok.org,2009/Post'
+    end
+
+    it 'should use the right order' do
+      lines = YAML.dump(@post).split($/).select {|l| l =~ /^:\w+/}
+      lines.map! {|l| l.gsub(/^:(\w+):.+$/, '@\1') }
+      lines.should == @post.to_yaml_properties
+    end
   end
 
-  describe '#to_yaml' do
+  describe '#comments' do
   end
 
   describe '#write' do

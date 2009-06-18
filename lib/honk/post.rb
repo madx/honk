@@ -28,7 +28,7 @@ module Honk
     end
 
     def to_yaml_properties
-      %w[@title @tags @timestamp @commentable @contents]
+      %w[@title @tags @timestamp @commentable @abstract @contents]
     end
 
     def to_yaml(opts)
