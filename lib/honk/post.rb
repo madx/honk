@@ -2,8 +2,8 @@ module Honk
   class Post
     yaml_as "tag:honk.yapok.org,2009:Post"
 
-    attr_accessor :title, :timestamp, :contents, :commentable, :tags,
-                  :slug,  :file
+    attr_accessor :title, :timestamp, :contents, :commentable, :abstract,
+                  :tags, :slug, :file
 
     def yaml_initialize(tag, params)
       initialize_attributes params
