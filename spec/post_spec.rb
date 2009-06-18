@@ -36,20 +36,17 @@ describe Honk::Post do
       sample = mock('posts/basic_sample.yml')
       YAML.load(sample.read).should.be.kind_of Honk::Post
 
-      sample = mock('posts/short_sample.yml')
-      post = YAML.load(sample.read)
+      post = YAML.load(mock('posts/short_sample.yml').read)
       post.tags.        should.be.kind_of Array
       post.commentable. should.be.true
       post.tags.        should.be.empty
 
       lambda {
-        sample = mock('posts/wrong_sample_1.yml')
-        YAML.load(sample.read)
+        YAML.load mock('posts/wrong_sample_1.yml').read
       }.should.raise ArgumentError, 'contents are missing'
 
       lambda {
-        sample = mock('posts/wrong_sample_2.yml')
-        YAML.load(sample.read)
+        YAML.load mock('posts/wrong_sample_2.yml').read
       }.should.raise ArgumentError, 'title is missing'
     end
   end
