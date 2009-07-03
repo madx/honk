@@ -1,2 +1,4 @@
 --- !honk.yapok.org,2009/Index
-- sample: ~
+- sample: 01_~.yml
+- basic_sample: basic_sample.yml
+- short_sample: ~

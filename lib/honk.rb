@@ -9,10 +9,7 @@ Infinity = 1/0.0
 
 module Honk
 
-  class NoPostError     < StandardError; end
-  class IndexError      < StandardError; end
-  class OutOfRangeError < StandardError; end
-  class FileFormatError < StandardError; end
+  class IndexError < StandardError; end
 
   DEFAULT_OPTIONS = [
     :root, :paginate, :comment_hook, :comment_filter, :meta, :language

@@ -1,82 +1,80 @@
 module Honk
   class Index
-    yaml_as "tag:honk.yapok.org,2009:Index"
 
-    def yaml_initialize(tag, array)
-      @@tag = tag
-      unless array.is_a?(Array) && array.inject(true) {|b,e| e.is_a?(Hash) }
-        raise FileFormatError, "not a valid index"
-      end
-      @@list = []
-      @@map = {}
-      for entry in array
-        @@list << (key = entry.keys.first)
-        if !entry[key]
-          entry[key] = "#{key}.yml"
-        elsif entry[key].index '~'
-          entry[key].gsub! '~', key
-        end
-        @@map.update(entry)
-      end
-      raise IndexError if @@list.length != @@map.keys.length
+    @@tag = "tag:honk.yapok.org,2009:Index"
+    yaml_as @@tag
+
+    attr_reader :list, :map
+
+    def initialize(array)
+      populate_attributes array
     end
 
+    def yaml_initialize(tag, array)
+      populate_attributes array
+    end
 
-    class << self
-      def dump
-        YAML.quick_emit(object_id, {}) do |out|
-          out.seq(@@tag, to_yaml_style) do |seq|
-            @@list.each do |k|
-              seq.add({k, @@map[k]})
-            end
+    def has?(entry)
+      @list.member? entry
+    end
+
+    def fetch(range)
+      if range.first >= @list.length
+        raise IndexError, "first item is out of range"
+      end
+      @list[range].collect do |slug|
+        Post.open slug, map[slug]
+      end
+    end
+
+    def all
+      fetch 0..(@list.length)
+    end
+
+    def pages
+      @list.length / Honk.options.paginate
+    end
+
+    def page(n)
+      return all if Honk.options.paginate == Infinity
+      start = n * Honk.options.paginate
+      fetch start...(start + Honk.options.paginate)
+    end
+
+    def dump
+      YAML.quick_emit(object_id, {}) do |out|
+        out.seq(@@tag, to_yaml_style) do |seq|
+          @list.each do |k|
+            seq.add({k => map[k]})
           end
         end
       end
+    end
 
-      def has?(name)
-        @@list.member?(name)
-      end
+    def push(slug, name=nil)
+      raise IndexError, "#{slug} is already in the index" if @list.member?(slug)
+      name = expand_tildes(slug, name)
+      @list << slug
+      @map[slug] = name
+    end
 
-      def list
-        @@list
-      end
+    private
 
-      def map
-        @@map
-      end
+    def populate_attributes(array)
+      @list = []
+      @map  = {}
 
-      def fetch(range)
-        raise OutOfRangeError if range.first >= @@list.length
-        @@list[range].collect do |slug|
-          Post.open slug, resolve(slug)
-        end
+      for entry in array
+        push(entry.keys.first, entry[entry.keys.first])
       end
+    end
 
-      def page(num)
-        return all if Honk.paginate == Infinity
-        start = num * Honk.paginate
-        fetch start...(start + Honk.paginate)
+    def expand_tildes(slug, file)
+      if file.nil?
+        file = "#{slug}.yml"
       end
+      file.gsub('~', slug)
+    end
 
-      def all
-        fetch 0...(@@list.length)
-      end
-
-      def pages(slug=nil)
-        (@@list.index(slug) || @@list.length) / Honk.paginate
-      end
-
-      def resolve(slug)
-        @@map[slug]
-      end
-
-      def push(map)
-        key = map.keys.first
-        unless @@list.member?(key)
-          @@map.update(map)
-          @@list.unshift(key)
-        end
-      end
-    end # class methods
   end
 end
