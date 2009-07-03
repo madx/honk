@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ -z "$*" ]; then
+  log=`/home/madx/repos/other/bacon/bin/bacon spec/*_spec.rb`
+else
+  log=`/home/madx/repos/other/bacon/bin/bacon $@`
+fi
+
+echo "$log"
+echo "---------------------------------------------------"

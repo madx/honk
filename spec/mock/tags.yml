@@ -1,5 +1,9 @@
 --- !honk.yapok.org,2009/Tags
 foo:
   - sample
+  - short_sample
+  - basic_sample
 bar:
   - sample
+  - short_sample
+  - basic_sample
