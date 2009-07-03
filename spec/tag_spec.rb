@@ -1,15 +1,9 @@
 describe Honk::Tag do
   before do
-    YAML.load_file(Honk.root / 'tags.yml')
+    YAML.load_file(mock('tags.yml'))
   end
 
   describe "#yaml_initialize" do
-    it "should raise an error if the file format is wrong" do
-      lambda {
-        YAML.load("--- !honk.yapok.org,2009/Tags\n- foo")
-      }.should.raise Honk::FileFormatError
-    end
-
     it "should put the contents in the @@mapping variable" do
       Honk::Tag.class_variables.member?("@@mapping").should.be.true
     end
@@ -17,7 +11,7 @@ describe Honk::Tag do
 
   describe ".get" do
     it "should return the post slugs associated with a tag" do
-      Honk::Tag.get("foo").should == %w[a_post]
+      Honk::Tag.get("foo").should == %w[sample short_sample basic_sample]
     end
 
     it "should return an empty array when a key is missing" do
@@ -37,13 +31,13 @@ describe Honk::Tag do
 
   describe ".tags" do
     it "should return a list of tags sorted alphabetically" do
-      Honk::Tag.tags.should == %w[bar foo overused]
+      Honk::Tag.tags.should == %w[bar foo]
     end
   end
 
   describe ".sorted_list" do
     it "should return a list of tags sorted by most used one" do
-      Honk::Tag.sorted_list.first[0].should == 'overused'
+      Honk::Tag.sorted_list.first[0].should == 'foo'
     end
   end
 end
