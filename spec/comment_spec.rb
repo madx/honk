@@ -1,23 +1,32 @@
 describe Honk::Comment do
 
+  before do
+    @comment = YAML.load(mock('posts/short_sample.comments.yml').read)
+  end
+
   describe "#initialize" do
-    it "should set the instance variables" do
-      c = Honk::Comment.new :foo => :bar
-      c.instance_variables.should == ["@foo"]
+    it "creates a new comment with default values" do
+      comment = Honk::Comment.new :author => "foo", :email => "foo@bar.com",
+                                  :contents => ""
+      comment.should.be.kind_of Honk::Comment
+      comment.timestamp.should.be.kind_of Time
+      comment.spam.should.be.false
+      comment.website.should.be.empty
     end
   end
 
   describe "#yaml_initialize" do
-    it "should raise an error if the file is not a comment" do
-      lambda {
-        YAML.load("--- !honk.yapok.org,2009/Comment\n- fail")
-      }.should.raise Honk::FileFormatError
+    it 'does the same things as #initialize when a YAML comment is read' do
+      @comment.should.be.kind_of? Honk::Comment
+      @comment.author.should == "Foo"
+      @comment.email.should  == "foo@bar.com"
+      @comment.timestamp.should.be.kind_of? Time
     end
   end
 
   describe "#to_yaml" do
     it "should dump the comments in the right format" do
-      yaml = File.read(Honk.root/'posts'/'yaml_dump_test.comments.yml')
+      yaml = mock('posts/short_sample.comments.yml').read
       c = YAML.load(yaml)
       YAML.dump(c).should == yaml
     end
