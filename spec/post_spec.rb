@@ -1,3 +1,5 @@
+require 'stringio'
+
 describe Honk::Post do
 
   describe '#initialize()' do
@@ -53,29 +55,29 @@ describe Honk::Post do
 
   describe '.open()' do
     it "opens a post given it's slug and path" do
-      post = Honk::Post.open('sample', 'basic_sample')
+      post = Honk::Post.open('sample', 'basic_sample.yml')
 
       post.slug.should == 'sample'
-      post.file.should == 'basic_sample'
+      post.file.should == 'basic_sample.yml'
     end
 
     it "sets the timestamp to the file's mtime if it's missing" do
-      post = Honk::Post.open('sample', 'short_sample')
+      post = Honk::Post.open('sample', 'short_sample.yml')
 
       post.timestamp.should == mock('posts/short_sample.yml').mtime
     end
 
     it 'should raise an ArgumentError if the post is invalid' do
       lambda {
-        Honk::Post.open('sample', 'wrong_sample_1')
+        Honk::Post.open('sample', 'wrong_sample_1.yml')
       }.should.raise ArgumentError
     end
   end
 
   describe '#to_yaml' do
     before do
-      @post  = Honk::Post.open('sample', 'basic_sample')
-      @short = Honk::Post.open('sample', 'short_sample')
+      @post  = Honk::Post.open('sample', 'basic_sample.yml')
+      @short = Honk::Post.open('sample', 'short_sample.yml')
     end
 
     it 'should dump with the right tag' do
@@ -91,56 +93,33 @@ describe Honk::Post do
   end
 
   describe '#comments' do
+    before do
+      @with    = Honk::Post.open('sample', 'short_sample.yml')
+      @without = Honk::Post.open('sample', 'basic_sample.yml')
+    end
+
+    it 'returns the comments as an array' do
+      @with.comments.should.be.kind_of    Array
+      @without.comments.should.be.kind_of Array
+    end
+
+    it 'returns an empty array when there are no comments' do
+      @without.comments.should.be.empty
+    end
+
+    # it 'uses lazy-loading to avoid reloading comments'
   end
 
   describe '#write' do
+    before do
+      @post = Honk::Post.open('sample', 'basic_sample.yml')
+    end
+
+    it 'should write the dump to the given fileish' do
+      buffer = StringIO.new
+      @post.write buffer
+      buffer.string.should == YAML.dump(@post)
+    end
   end
-
-  # describe "#comments" do
-  #   it "should return an empty array if there's no comment file" do
-  #     post = Honk::Post.open('another_post', 'another_post.yml')
-  #     post.comments.should.be.empty
-  #   end
-
-  #   it "should return an array of comments otherwise" do
-  #     post = Honk::Post.open('a_post', 'a_post.yml')
-  #     post.comments.should.be.kind_of Array
-  #   end
-
-  #   it "should return an empty array if the file format is wrong" do
-  #     post = Honk::Post.open('foo', 'wrong_comments.yml')
-  #     post.comments.should.be.empty
-  #   end
-  # end
-
-  # describe "#initialize" do
-  #   it "should set the instance variables" do
-  #     p = Honk::Post.new
-  #     p.instance_variables.sort.should == %w[@title @timestamp @contents @commentable @tags].sort
-  #   end
-  # end
-
-  # describe "#write" do
-  #   before do
-  #     @p = Honk::Post.new(
-  #       :title => "foo", :tags => ['a', 'b'],
-  #       :timestamp => Time.now, :commentable => true,
-  #       :contents => "<p>This is a post</p>"
-  #     )
-  #   end
-
-  #   it "should write the dump to a file" do
-  #     out = ""
-  #     @p.write(out)
-  #     out.should == YAML.dump(@p)
-  #   end
-
-  #   it "should append it if there's already a post" do
-  #     out = ""
-  #     @p.write(out)
-  #     @p.write(out)
-  #     out.should.not == YAML.dump(@p)
-  #   end
-  # end
 
 end

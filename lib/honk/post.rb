@@ -16,14 +16,7 @@ module Honk
 
     def comments
       if @comments.nil?
-        begin
-          comment_file = Honk.root / 'posts' / @file.gsub(/\.yml$/, '.comments.yml')
-          if File.exist? comment_file
-            @comments = YAML.load_stream(File.read(comment_file)).documents
-          else [] end
-        rescue NoMethodError, FileFormatError
-          []
-        end
+        []
       else @comments end
     end
 
@@ -46,7 +39,7 @@ module Honk
     end
 
     def self.open(slug, file)
-      path = Honk.options.root / 'posts' / "#{file}.yml"
+      path = Honk.options.root / 'posts' / file
       post = YAML.load_file(path)
       post.tap do |p|
         p.slug = slug
