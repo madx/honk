@@ -8,7 +8,7 @@ xml.instruct! :xml, :version => "1.0"
 xml.feed :xmlns => "http://www.w3.org/2005/Atom" do
   xml.id blog_url
   xml.title Honk.meta[:title]
-  xml.updated @posts.first.timestamp.httpdate
+  xml.updated @posts.first.timestamp.xmlschema
   xml.link :href => blog_url
   xml.link :rel => "self", :href => File.join(blog_url, request.env["REQUEST_URI"])
   xml.author &author
@@ -17,9 +17,9 @@ xml.feed :xmlns => "http://www.w3.org/2005/Atom" do
     xml.entry do
       xml.id post_url(post)
       xml.title post.title, :type => "html"
-      xml.updated post.timestamp.httpdate
+      xml.updated post.timestamp.xmlschema
       xml.author &author
-      xml.link post_url(post), :rel => "alternate"
+      xml.link :rel => "alternate", :href => post_url(post)
       xml.summary :type => "xhtml" do
         xml.div :xmlns => "http://www.w3.org/1999/xhtml" do
           xml << post.contents

@@ -2,11 +2,10 @@ module Honk
   class Comment
     yaml_as "tag:honk.yapok.org,2009:Comment"
 
-    attr_reader :author, :email, :website, :timestamp, :contents, :post
+    attr_reader :author, :email, :website, :timestamp, :contents, :post, :spam
 
-    def yaml_initialize(tag, values)
-      raise FileFormatError, "not a valid comment" unless values.is_a? Hash
-      initialize(values)
+    def yaml_initialize(tag, params)
+      initialize params
     end
 
     def initialize(params={})
