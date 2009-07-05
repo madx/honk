@@ -31,10 +31,10 @@ module Honk
   }
 
   @@options = Metash.new
-  @@options.instance_eval &DEFAULTS
+  @@options.instance_eval(&DEFAULTS)
 
   def self.setup(&blk)
-    @@options.instance_eval &blk
+    @@options.instance_eval(&blk)
   end
 
   def self.options
