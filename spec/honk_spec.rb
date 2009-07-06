@@ -5,6 +5,13 @@ describe 'Honk' do
     @defaults.instance_eval &Honk::DEFAULTS
   end
 
+  it 'has @@index end @@tags' do
+    Honk.load!
+
+    Honk.index.should.be.kind_of Honk::Index
+    Honk.tags.should.be.kind_of  Honk::Tagging
+  end
+
   describe 'Options' do
     should 'be accessible with the .options method' do
       Honk.options.should.be.kind_of Metash

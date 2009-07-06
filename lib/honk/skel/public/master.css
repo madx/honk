@@ -47,10 +47,13 @@ a:hover, a:active, a:focus {
 #contents .post-contents {
   padding: 0.5em 1em;
 }
-#contents .post-contents code {
+#contents .post-contents code, #contents .post-contents pre {
   padding: 1px;
   background-color: #666;
   color: white;
+}
+#contents .post-contents pre {
+  padding: 0.5em 1em;
 }
 #contents .post-details {
   background-color: #efefef;

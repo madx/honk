@@ -24,6 +24,10 @@ module Honk
       %w[@title @tags @timestamp @commentable @abstract @contents]
     end
 
+    def formatted_timestamp
+      @timestamp.strftime Honk.options.time_format
+    end
+
     def to_yaml(opts)
       YAML.quick_emit(object_id, opts) do |out|
         out.map(taguri, to_yaml_style) do |map|

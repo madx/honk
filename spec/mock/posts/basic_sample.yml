@@ -1,9 +1,9 @@
 --- !honk.yapok.org,2009/Post
-:title: A sample post
+:title: Another post
 :tags:
   - foo
   - bar
 :timestamp: 2009-01-27T21:42:21+01:00
 :commentable: true
 :contents: |-
-  <p>This is a post</p>
+  <p>This is another post</p>

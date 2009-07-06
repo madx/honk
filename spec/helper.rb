@@ -34,6 +34,7 @@ def reset_honk
   Honk.setup &Honk::DEFAULTS
   Honk.setup {
     root Pathname.new(__FILE__).dirname / 'mock'
+    paginate 1
   }
 end
 

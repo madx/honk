@@ -1,0 +1,7 @@
+%h2 Tag list
+
+%ul
+  - @tags.each do |tag|
+    %li== #{tag_link(tag)} (#{tag_item_count(Honk.tags.get(tag))})
+
+- @title = '- Tags'

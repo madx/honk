@@ -1,26 +1,30 @@
-require 'pathname'
-require 'yaml'
-require 'date'
-require 'metash'
+%w[pathname yaml date metash sinatra/base haml mime/types].each do |lib|
+  require lib
+end
 
 class Pathname; alias / join; end
 
 Infinity = 1/0.0
 
 module Honk
+  PATH = Pathname.new(__FILE__).dirname
 
-  class IndexError < StandardError; end
+  class IndexError    < StandardError; end
+  class NoTagError    < StandardError; end
+  class NoPostError   < StandardError; end
+  class SecurityError < StandardError; end
 
   DEFAULT_OPTIONS = [
-    :root, :paginate, :comment_hook, :comment_filter, :meta, :language
+    :root, :paginate, :comment_hook, :comment_filter, :meta, :time_format
   ]
 
   DEFAULTS = lambda {
-    root           Pathname.new('.').expand_path
+    root           PATH / 'honk' / 'skel'
     paginate       10
     language       :en
     comment_hook   lambda {|p,c| }
     comment_filter lambda {|s| s }
+    time_format    '%c'
     meta           _={
       :author      => "Honk default author",
       :title       => "Honk",
@@ -33,6 +37,8 @@ module Honk
   @@options = Metash.new
   @@options.instance_eval(&DEFAULTS)
 
+  @@index, @@tags = nil, nil
+
   def self.setup(&blk)
     @@options.instance_eval(&blk)
   end
@@ -40,6 +46,14 @@ module Honk
   def self.options
     @@options
   end
+
+  def self.load!
+    @@index = YAML.load_file(options.root / 'index.yml')
+    @@tags  = YAML.load_file(options.root / 'tags.yml')
+  end
+
+  def self.index; @@index; end
+  def self.tags;  @@tags;  end
 
   def self.check_options
     validity = true
@@ -109,6 +123,6 @@ module Honk
 
 end
 
-%w[post comment index tag].each do |lib|
-  require Pathname.new(__FILE__).dirname / 'honk' / lib
+%w[post comment index tagging helpers].each do |lib|
+  require Honk::PATH / 'honk' / lib
 end

@@ -1,0 +1,12 @@
+#header
+  %p.navigation
+    %a{:title => "View all posts", :href => "/archive"} Archive
+    &ndash;
+    %a{:title => "View all available tags", :href => "/tags"} Tags
+    &ndash;
+    %a{:title => "Suscribe to the RSS feed", :href => "/rss.xml"} RSS
+    &ndash;
+    %a{:tilte => "Suscribe to the Atom feed", :href => "/atom.xml"} Atom
+
+  %h1
+    %a{:href => '/', :title => 'Back to the index'}= Honk.options.meta[:title]

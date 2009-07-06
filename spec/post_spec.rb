@@ -122,4 +122,11 @@ describe Honk::Post do
     end
   end
 
+  describe 'formatted_timestamp' do
+    it 'returns the timestamp formatted with Honk.options.time_format' do
+      @post = Honk::Post.open('sample', 'basic_sample.yml')
+      @post.formatted_timestamp.
+        should == @post.timestamp.strftime(Honk.options.time_format)
+    end
+  end
 end

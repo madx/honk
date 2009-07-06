@@ -85,7 +85,7 @@ describe Honk::Index do
 
     describe ".pages()" do
       it "should return the number of pages" do
-        @index.pages.should == 10
+        @index.pages.should == 100
       end
     end
 
@@ -93,7 +93,7 @@ describe Honk::Index do
       it 'should return all the posts for a given page' do
         page = @index.page(0)
         page.first.should == {'post0' => 'post0.yml'}
-        page.last.should  == {'post9' => 'post9.yml'}
+        page.last.should  == {'post0' => 'post0.yml'}
       end
 
       it 'should return all posts for page(0) when paginate is infinity' do

@@ -1,0 +1,15 @@
+%h2 An error occured
+
+%p
+  Oops, something nasty happened. The server says:
+  - if @message
+    %br
+    = @message
+%p
+  Please report to the author at
+  = author_mailto_link
+
+%p
+  You can
+  %a{:href => '/', :title => 'Home page'} return to the home page
+  and continue your navigation from here.
