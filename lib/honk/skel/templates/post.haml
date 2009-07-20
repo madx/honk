@@ -1,7 +1,13 @@
 - @title = '- ' + @post.title
 %h2= @short ? post_link(@post) : @post.title
 .post-contents
-  = @post.contents
+  - if @short && @post.abstract
+    = @post.abstract
+    %p
+      %a{:href => "/post/#{@post.slug}", :title => "Read the full post"} |
+        Read more » |
+  - else
+    = @post.contents
 .post-details
   %span.post-tags
     Tags:
