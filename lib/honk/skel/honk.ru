@@ -14,10 +14,10 @@ Honk.setup do
   root Pathname.new(__FILE__).dirname
 
   # A filter for the comments, the default is to HTML-escape the input.
-  comment_filter {|s| Rack::Utils.escape_html(s) }
+  comment_filter lambda {|s| Rack::Utils.escape_html(s) }
 
   # A hook that is called after successfuly posting a comment
-  post_comment_hook { |post, comment|
+  comment_hook lambda { |post, comment|
   }
 
   # Define your time format (see Time#srtftime for available formats)
