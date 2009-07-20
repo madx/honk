@@ -89,7 +89,7 @@ module Honk
     end
 
     def text_field(name, caption)
-      contents = params[name.to_sym] || ''
+      contents = (params[name.to_sym] || '').gsub("\r\n", '&#10;')
       member = @errors && @errors.member?(name.to_sym)
 
       args = {
