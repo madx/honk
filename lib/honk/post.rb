@@ -16,7 +16,15 @@ module Honk
 
     def comments
       if @comments.nil?
-        []
+        begin
+          comment_file = Honk.options.root / 'posts' /
+                         @file.gsub(/\.yml$/, '.comments.yml')
+          if File.exist? comment_file
+            @comments = YAML.load_stream(File.read(comment_file)).documents
+          else [] end
+        rescue NoMethodError
+          []
+        end
       else @comments end
     end
 

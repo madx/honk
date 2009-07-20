@@ -39,7 +39,6 @@
       %form{:action => request.env["REQUEST_URI"], :method => "post"}
         %p= input_field "c_author", "Name"
         %p= input_field "c_email", "E-mail"
-        %p{:class => "trap"}= input_field "c_nickname", "Nickname"
         %p= input_field "c_website", "Website"
         %p#text-field= text_field  "c_contents", "Your comment"
         %p
@@ -47,6 +46,6 @@
           = remember_check_box
         %p
           %input{:type => "submit", :value => "Send"}
-
+        %p{:class => "trap"}= input_field "c_nickname", "Nickname"
   - else
     %h3 Comments are disabled for this post.

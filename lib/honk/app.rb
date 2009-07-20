@@ -25,6 +25,69 @@ module Honk
     end
 
     post '/post/:slug' do
+      if Honk.index.has? params[:slug]
+        redirect '/' unless params[:c_nickname].strip.empty? # antispam
+
+        @errors = []
+        @errors << :c_author   if params[:c_author].strip.empty?
+        @errors << :c_email    if params[:c_email].strip.empty?
+        if params[:c_contents].empty? || params[:c_contents] =~ /\A\s+\Z/
+          @errors << :c_contents
+        end
+
+        unless @errors.empty?
+          begin
+            @post = Post.open(params[:slug], Honk.index.map[params[:slug]])
+          rescue Errno::ENOENT
+            raise IndexError, params[:slug]
+          end
+
+          haml :post
+        else
+          post = Post.open(params[:slug], Honk.index.map[params[:slug]])
+          args = {
+            :author    => params[:c_author],
+            :email     => params[:c_email],
+            :website   => params[:c_website],
+            :contents  => Honk.options.comment_filter.call(
+              params[:c_contents].gsub("\r\n", "\n")
+            ),
+            :timestamp => Time.now
+          }
+
+          unless args[:website][0..6] == 'http://'
+            args[:website] = "http://#{args[:website]}"
+          end
+          args[:website] = nil if args[:website].empty?
+
+          if params[:c_remember]
+            [:author, :email, :website].each do |field|
+              response.set_cookie(field.to_s, :value => args[field])
+            end
+            response.set_cookie("remember", true)
+          else
+            [:author, :email, :website].each do |field|
+              response.delete_cookie(field.to_s)
+            end
+            response.delete_cookie("remember")
+          end
+
+          begin
+            comment_file = Honk.index.map[params[:slug]].
+              gsub(/\.yml$/, '.comments.yml')
+          rescue
+            raise IndexError, params[:slug]
+          end
+
+          comment_file = Honk.options.root / 'posts' / comment_file
+          comment = Comment.new args
+          File.open(comment_file, 'a') {|f| comment.write(f) }
+
+          Honk.options.comment_hook.call(post, comment)
+
+          redirect request.env['REQUEST_URI']+"#comments"
+        end
+      else raise NoPostError, params[:slug]; end
     end
 
     get '/tags' do
