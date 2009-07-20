@@ -5,7 +5,7 @@ module Honk
       :stylesheet => '%%link{%s}',
       :link       => '%%a{%s} %s',
       :tag_link   =>
-        '%%a{:href => "/tag/%s", :title => "View posts tagged %s"} %s',
+        '%%a{:href => "/tags/%s", :title => "View posts tagged %s"} %s',
       :post_link  => '%%a{:href => "/post/%s", :title => "View this post"} %s',
       :label      => '%%label{:for => "%s"} %s:',
       :input      => '%%input{%s}',
@@ -119,7 +119,7 @@ module Honk
     end
 
     def tag_url(t)
-      "http://" + File.join(Honk.options.meta[:domain], 'tag', t)
+      "http://" + File.join(Honk.options.meta[:domain], 'tags', t)
     end
 
     def post_url(p)
