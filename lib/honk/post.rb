@@ -58,6 +58,10 @@ module Honk
       raise ArgumentError, 'title is missing'     unless params[:title]
       raise ArgumentError, 'contents are missing' unless params[:contents]
 
+      unless params[:timestamp].is_a? Time
+        params[:timestamp] = Time.parse(params[:timestamp])
+      end
+
       params[:commentable] ||= true
       params[:tags]        ||= []
 

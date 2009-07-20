@@ -37,17 +37,17 @@ module Honk
       template :post_link, p.slug, p.title
     end
 
-    def stylesheet(name)
+    def stylesheet
       args = {
         :rel => "stylesheet", :type => "text/css",
-        :media => "screen", :href => versioned_css("/pub/#{name}.css")
+        :media => "screen", :href => versioned_css
       }
       template :stylesheet, args.inspect
     end
 
-    def versioned_css(file)
-      mtime = File.mtime(File.join(options.root, file)).to_i
-      "%s?%s" % [file, mtime]
+    def versioned_css
+      mtime = File.mtime(File.join(options.root, 'public', 'master.css')).to_i
+      "/pub/master.css?%s" % mtime
     end
 
     def comments_link(post)

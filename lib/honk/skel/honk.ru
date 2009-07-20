@@ -68,6 +68,8 @@ else
 
 end
 
+Honk.load!
+
 puts "Let's rock!"
 
 run Honk::App
