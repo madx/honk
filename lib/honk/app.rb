@@ -11,8 +11,8 @@ module Honk
     helpers Helpers
 
     get '/' do
-      page_num = params[:page].to_i || 0
-      @posts = Honk.index.page page_num
+      @page = params[:page].to_i || 0
+      @posts = Honk.index.page @page
       haml :index
     end
 
